@@ -49,6 +49,9 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /backend/
           local-dir: ./backend/dist/
+          exclude: |
+            **/*.sqlite
+            **/*.sqlite-*
           
       - name: Deploy Backend package.json via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
@@ -61,6 +64,7 @@ jobs:
           state-name: .ftp-deploy-sync-state-package.json
           exclude: |
             **/*
+            !package.json
             !package-lock.json
             node_modules/**
 
