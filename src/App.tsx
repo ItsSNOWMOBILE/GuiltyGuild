@@ -557,7 +557,7 @@ export default function App() {
                     // Preserve host-side data that the server doesn't send back on broadcast
                     questions: prev?.hostId === user?.id ? prev?.questions ?? payload.questions : payload.questions,
                     currentRoundAnswers: prev?.hostId === user?.id ? prev?.currentRoundAnswers ?? payload.currentRoundAnswers : payload.currentRoundAnswers,
-                    playerData: prev?.playerData ?? payload.playerData,
+                    playerData: payload.playerData ?? prev?.playerData,
                     // Reset per-round client state when question changes
                     userHasAnswered: questionChanged ? payload.userHasAnswered : (payload.userHasAnswered ?? prev?.userHasAnswered),
                     roundResult: questionChanged ? payload.roundResult : (payload.roundResult ?? prev?.roundResult),
