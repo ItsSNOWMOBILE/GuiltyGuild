@@ -171,9 +171,9 @@ export function TheTrial({
     }
 
     // Default Player/Host State: Purple System Window
-    return `${baseStyle} 
-      bg-[#0a0a0cd9] border-[#7c3aed] 
-      hover:bg-[#1a052b] hover:border-[#D946EF] hover:shadow-[0_0_40px_rgba(217,70,239,0.7)] hover:-translate-y-1
+    return `${baseStyle}
+      bg-[#0a0a0cd9] border-[#7c3aed]
+      hover:bg-[#1a052b] hover:border-[#D946EF] hover:shadow-[0_0_30px_rgba(217,70,239,0.9),0_0_80px_rgba(217,70,239,0.4)] hover:-translate-y-1 hover:scale-[1.01]
     `;
   };
 
