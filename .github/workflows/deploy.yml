@@ -62,3 +62,4 @@ jobs:
           exclude: |
             **/*
             !package.json
+            !package-lock.json
