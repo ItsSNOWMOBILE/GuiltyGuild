@@ -191,24 +191,3 @@ html {
   font-size: var(--font-size);
 }
 
-/* ── TheTrial answer option hover glow ───────────────────────────────────── */
-/* Tailwind v4 JIT does not reliably scan hover: arbitrary-value classes      */
-/* inside multi-line template literals, so we drive hover styles from CSS.    */
-
-button.answer-option {
-  transition: background-color 300ms, border-color 300ms, box-shadow 300ms,
-    transform 300ms;
-}
-
-button.answer-option:not(:disabled):hover {
-  background-color: #1a052b;
-  border-color: #d946ef;
-  box-shadow: 0 0 30px rgba(217, 70, 239, 0.9), 0 0 80px rgba(217, 70, 239, 0.4);
-  transform: translateY(-4px) scale(1.01);
-}
-
-button.answer-option:not(:disabled):hover .answer-letter-key {
-  border-color: #ffd700;
-  color: #ffd700;
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-}

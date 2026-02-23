@@ -3005,3 +3005,26 @@ html {
     background: rgba(255, 215, 0, 0.8);
   }
 }
+
+/* ── TheTrial answer option hover glow ───────────────────────────────────── */
+/* Tailwind v4 has no Vite plugin here — index.css is the pre-compiled static */
+/* output bundled by Vite. Hover arbitrary-value classes inside template       */
+/* literals are never scanned, so we drive hover states in plain CSS.          */
+
+button.answer-option {
+  transition: background-color 300ms ease, border-color 300ms ease,
+    box-shadow 300ms ease, transform 300ms ease;
+}
+
+button.answer-option:not(:disabled):hover {
+  background-color: #1a052b;
+  border-color: #d946ef;
+  box-shadow: 0 0 30px rgba(217, 70, 239, 0.9), 0 0 80px rgba(217, 70, 239, 0.4);
+  transform: translateY(-4px) scale(1.01);
+}
+
+button.answer-option:not(:disabled):hover .answer-letter-key {
+  border-color: #ffd700;
+  color: #ffd700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+}

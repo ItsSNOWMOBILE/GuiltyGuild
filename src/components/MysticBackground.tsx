@@ -277,16 +277,16 @@ export function MysticBackground() {
         }
 
         window.addEventListener('resize', handleResize);
-        canvas.addEventListener('mousemove', handleMouseMove);
-        canvas.addEventListener('mouseleave', handleMouseLeave);
+        window.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mouseleave', handleMouseLeave);
         document.addEventListener('visibilitychange', handleVisibilityChange);
         init();
         animate();
 
         return () => {
             window.removeEventListener('resize', handleResize);
-            canvas.removeEventListener('mousemove', handleMouseMove);
-            canvas.removeEventListener('mouseleave', handleMouseLeave);
+            window.removeEventListener('mousemove', handleMouseMove);
+            document.removeEventListener('mouseleave', handleMouseLeave);
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             cancelAnimationFrame(animationRef.current);
         };
@@ -295,7 +295,7 @@ export function MysticBackground() {
     return (
         <canvas
             ref={canvasRef}
-            className="fixed inset-0 w-full h-full pointer-events-auto"
+            className="fixed inset-0 w-full h-full pointer-events-none"
             style={{ background: '#000' }}
         />
     );
