@@ -19,7 +19,6 @@ import {
   Edit2,
   Layers
 } from "lucide-react";
-import { MysticBackground } from "./MysticBackground";
 import {
   DndContext,
   closestCenter,
@@ -92,13 +91,14 @@ interface WeaversLoomProps {
   currentQuestionIndex: number;
   gameStatus: GamePhase;
   onTerminate: () => void;
-  // New props for quiz management
   sessionId?: string | null;
   projectId?: string;
   publicAnonKey?: string;
   timeLimitSeconds?: number;
   onUpdateTimeLimit?: (seconds: number) => void;
   isActionLoading?: boolean;
+  isSeeThrough?: boolean;
+  onToggleSeeThrough?: () => void;
 }
 
 // Ensure questions have IDs
@@ -227,6 +227,8 @@ export function WeaversLoom({
   timeLimitSeconds = 30,
   onUpdateTimeLimit,
   isActionLoading = false,
+  isSeeThrough = false,
+  onToggleSeeThrough,
 }: WeaversLoomProps) {
   const [newQuestion, setNewQuestion] = useState<Question>({
     text: "",
@@ -260,7 +262,6 @@ export function WeaversLoom({
   const [quizName, setQuizName] = useState("");
   const [quizDescription, setQuizDescription] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const [isTransparent, setIsTransparent] = useState(false);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -577,10 +578,9 @@ export function WeaversLoom({
   };
 
   return (
-    <div className={`min-h-screen text-[#00C2FF] transition-colors duration-500 ${isTransparent ? 'loom-transparent' : 'bg-[#0a0a0a]'}`}>
-      {isTransparent && <MysticBackground />}
+    <div className={`relative min-h-screen text-[#00C2FF] transition-colors duration-500 ${isSeeThrough ? 'loom-transparent' : 'bg-[#0a0a0a]'}`} style={{ zIndex: 2 }}>
       {/* Header with mode toggle */}
-      <div className={`loom-header border-b-2 border-[#FFD700]/30 p-4 transition-colors duration-500 ${isTransparent ? '' : 'bg-[#050505]'}`}>
+      <div className={`loom-header border-b-2 border-[#FFD700]/30 p-4 transition-colors duration-500 ${isSeeThrough ? '' : 'bg-[#050505]'}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h1 className="text-2xl text-[#FFD700] tracking-wider">
@@ -614,13 +614,13 @@ export function WeaversLoom({
           </div>
 
           <Button
-            onClick={() => setIsTransparent(v => !v)}
+            onClick={onToggleSeeThrough}
             variant="ghost"
-            title={isTransparent ? "Disable transparency" : "See through panel"}
-            className={`ml-2 border transition-colors ${isTransparent ? 'text-[#FFD700] border-[#FFD700]/50 hover:bg-[#FFD700]/10' : 'text-[#6b7280] border-[#6b7280]/30 hover:text-[#FFD700] hover:border-[#FFD700]/50 hover:bg-[#FFD700]/5'}`}
+            title={isSeeThrough ? "Disable transparency" : "See through panel"}
+            className={`ml-2 border transition-colors ${isSeeThrough ? 'text-[#FFD700] border-[#FFD700]/50 hover:bg-[#FFD700]/10' : 'text-[#6b7280] border-[#6b7280]/30 hover:text-[#FFD700] hover:border-[#FFD700]/50 hover:bg-[#FFD700]/5'}`}
           >
             <Layers className="w-4 h-4 mr-2" />
-            {isTransparent ? "Opaque" : "See-Through"}
+            {isSeeThrough ? "Opaque" : "See-Through"}
           </Button>
 
           <Button

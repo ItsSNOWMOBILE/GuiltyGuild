@@ -101,6 +101,7 @@ export default function App() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [isSovereignMode, setIsSovereignMode] = useState(false);
+    const [loomSeeThrough, setLoomSeeThrough] = useState(false);
     const [isHostActionLoading, setIsHostActionLoading] = useState(false);
 
     // Questions the host manages locally (loaded into game on start)
@@ -905,6 +906,29 @@ export default function App() {
             {/* Host admin panel (Weaver's Loom) */}
             {screen === "admin" && isSovereignMode && (
                 <>
+                    {/* Background game view when see-through is on */}
+                    {loomSeeThrough && gameState && (
+                        <div className="fixed inset-0 pointer-events-none" style={{ zIndex: 1 }}>
+                            <TheTrial
+                                phase={gameState.phase}
+                                question={
+                                    gameState.questions
+                                        ? gameState.questions[gameState.currentQuestionIndex]
+                                        : gameState.currentQuestion
+                                }
+                                questionNumber={gameState.currentQuestionIndex + 1}
+                                totalQuestions={gameState.questions?.length ?? gameState.totalQuestions ?? 99}
+                                timeLimit={gameState.timeLimitSeconds}
+                                phaseStartTime={gameState.phaseStartTime}
+                                onAnswer={() => {}}
+                                hasAnswered={false}
+                                roundResult={undefined}
+                                score={0}
+                                rank={0}
+                                isHost={false}
+                            />
+                        </div>
+                    )}
                     <WeaversLoom
                         isSovereignMode={isSovereignMode}
                         onToggleMode={handleToggleMode}
@@ -924,6 +948,8 @@ export default function App() {
                         timeLimitSeconds={timeLimitSeconds}
                         onUpdateTimeLimit={setTimeLimitSeconds}
                         isActionLoading={isHostActionLoading}
+                        isSeeThrough={loomSeeThrough}
+                        onToggleSeeThrough={() => setLoomSeeThrough(v => !v)}
                     />
                     <Toaster position="top-center" theme="dark" />
                 </>
