@@ -37,6 +37,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 import { toast } from "sonner";
@@ -161,7 +162,7 @@ function SortableQuestionItem({ question, index, isCurrentQuestion, gameStatus, 
       <div className="flex-1">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <p className={`mb-2 font-medium ${isCurrentQuestion ? 'text-[#FFD700]' : 'text-[#00C2FF]'}`}>
+            <p className={`mb-2 font-medium whitespace-pre-wrap ${isCurrentQuestion ? 'text-[#FFD700]' : 'text-[#00C2FF]'}`}>
               {index + 1}. {question.text}
             </p>
             <div className="grid grid-cols-2 gap-2 text-sm">
@@ -679,12 +680,12 @@ export function WeaversLoom({
                     <Label htmlFor="question-text" className="text-[#00C2FF]">
                       Question
                     </Label>
-                    <Input
+                    <Textarea
                       id="question-text"
                       value={newQuestion.text}
                       onChange={(e) => setNewQuestion({ ...newQuestion, text: e.target.value })}
                       placeholder="Enter your question..."
-                      className="bg-[#1a1a1a] border-[#00C2FF]/30 text-[#00C2FF]"
+                      className="bg-[#1a1a1a] border-[#00C2FF]/30 text-[#00C2FF] min-h-[4rem] resize-y"
                     />
                   </div>
 
