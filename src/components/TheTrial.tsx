@@ -80,9 +80,11 @@ export function TheTrial({
 
       setTimeRemaining(newTime);
 
-      // Fire onTimeUp exactly when the timer zeroes out for the Host
-      if (newTime === 0 && phase === 'STARTING' && isHost && onTimeUp) {
-        onTimeUp();
+      // Fire onTimeUp when the timer zeroes out for the Host
+      if (newTime === 0 && isHost && onTimeUp) {
+        if (phase === 'STARTING' || phase === 'QUESTION_ACTIVE') {
+          onTimeUp();
+        }
       }
     };
 

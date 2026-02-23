@@ -3135,3 +3135,18 @@ button.answer-option.answer-dimmed .answer-letter-key {
 button.answer-option.answer-dimmed .answer-text {
   color: rgb(75, 85, 99);
 }
+
+/* ── WeaversLoom transparent (see-through) mode ────────────────────────── */
+.loom-transparent {
+  background: transparent !important;
+}
+.loom-transparent .loom-header {
+  background: rgba(5, 5, 5, 0.65) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.loom-transparent .loom-panel {
+  background: rgba(10, 10, 12, 0.45) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}

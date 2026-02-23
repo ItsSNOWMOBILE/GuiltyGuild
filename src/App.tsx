@@ -960,9 +960,9 @@ export default function App() {
                         }
                         isHost={user?.id === gameState.hostId}
                         onTimeUp={() => {
-                            if (user?.id === gameState.hostId && gameState.phase === "STARTING") {
-                                handleHostAction("next");
-                            }
+                            if (user?.id !== gameState.hostId) return;
+                            if (gameState.phase === "STARTING") handleHostAction("next");
+                            else if (gameState.phase === "QUESTION_ACTIVE") handleHostAction("reveal");
                         }}
                     />
                     {/* Quick access to Weaver's Loom for the host */}

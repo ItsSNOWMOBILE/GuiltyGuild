@@ -16,8 +16,10 @@ import {
   EyeOff,
   CheckCircle,
   GripVertical,
-  Edit2
+  Edit2,
+  Layers
 } from "lucide-react";
+import { MysticBackground } from "./MysticBackground";
 import {
   DndContext,
   closestCenter,
@@ -258,6 +260,7 @@ export function WeaversLoom({
   const [quizName, setQuizName] = useState("");
   const [quizDescription, setQuizDescription] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [isTransparent, setIsTransparent] = useState(false);
 
   // Keyboard shortcuts
   useEffect(() => {
@@ -574,9 +577,10 @@ export function WeaversLoom({
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] text-[#00C2FF]">
+    <div className={`min-h-screen text-[#00C2FF] transition-colors duration-500 ${isTransparent ? 'loom-transparent' : 'bg-[#0a0a0a]'}`}>
+      {isTransparent && <MysticBackground />}
       {/* Header with mode toggle */}
-      <div className="bg-[#050505] border-b-2 border-[#FFD700]/30 p-4">
+      <div className={`loom-header border-b-2 border-[#FFD700]/30 p-4 transition-colors duration-500 ${isTransparent ? '' : 'bg-[#050505]'}`}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <h1 className="text-2xl text-[#FFD700] tracking-wider">
@@ -610,9 +614,19 @@ export function WeaversLoom({
           </div>
 
           <Button
+            onClick={() => setIsTransparent(v => !v)}
+            variant="ghost"
+            title={isTransparent ? "Disable transparency" : "See through panel"}
+            className={`ml-2 border transition-colors ${isTransparent ? 'text-[#FFD700] border-[#FFD700]/50 hover:bg-[#FFD700]/10' : 'text-[#6b7280] border-[#6b7280]/30 hover:text-[#FFD700] hover:border-[#FFD700]/50 hover:bg-[#FFD700]/5'}`}
+          >
+            <Layers className="w-4 h-4 mr-2" />
+            {isTransparent ? "Opaque" : "See-Through"}
+          </Button>
+
+          <Button
             onClick={onTerminate}
             variant="ghost"
-            className="ml-4 text-red-500 hover:text-red-400 hover:bg-red-900/20 border border-red-900/50"
+            className="ml-2 text-red-500 hover:text-red-400 hover:bg-red-900/20 border border-red-900/50"
           >
             <Trash2 className="w-4 h-4 mr-2" />
             End Session
@@ -626,7 +640,7 @@ export function WeaversLoom({
           <div className="lg:col-span-2 space-y-6">
             {/* Quiz Management Bar */}
             {(gameStatus === "LOBBY" || gameStatus === "OFFLINE") && (
-              <div className="flex items-center gap-3 p-4 bg-[#0a0a0a] border-2 border-[#00C2FF]/30 rounded-lg">
+              <div className="loom-panel flex items-center gap-3 p-4 bg-[#0a0a0a] border-2 border-[#00C2FF]/30 rounded-lg">
                 <Button
                   onClick={() => setShowQuizModal(true)}
                   variant="outline"
@@ -678,7 +692,7 @@ export function WeaversLoom({
 
             {/* Add new question form */}
             {(gameStatus === "LOBBY" || gameStatus === "OFFLINE") && (
-              <div className="bg-[#0a0a0a] border-2 border-[#00C2FF]/30 rounded-lg p-6">
+              <div className="loom-panel bg-[#0a0a0a] border-2 border-[#00C2FF]/30 rounded-lg p-6">
                 <h2 className="text-[#FFD700] mb-4 flex items-center gap-2">
                   <Plus className="w-5 h-5" />
                   Manifest New Question
@@ -769,7 +783,7 @@ export function WeaversLoom({
             )}
 
             {/* Question list */}
-            <div className="bg-[#0a0a0a] border-2 border-[#00C2FF]/30 rounded-lg p-6">
+            <div className="loom-panel bg-[#0a0a0a] border-2 border-[#00C2FF]/30 rounded-lg p-6">
               <h2 className="text-[#FFD700] mb-4">
                 Woven Questions ({questions.length})
               </h2>
@@ -807,7 +821,7 @@ export function WeaversLoom({
           {/* Right column: Game controls and stats */}
           <div className="space-y-6">
             {/* Game controls */}
-            <div className="bg-[#0a0a0a] border-2 border-[#FFD700]/30 rounded-lg p-6 sticky top-6">
+            <div className="loom-panel bg-[#0a0a0a] border-2 border-[#FFD700]/30 rounded-lg p-6 sticky top-6">
               <h2 className="text-[#FFD700] mb-4 flex items-center justify-between">
                 <span>Weaver's Controls</span>
                 <span className="text-xs bg-[#FFD700]/10 px-2 py-1 rounded border border-[#FFD700]/30">{gameStatus}</span>
