@@ -57,7 +57,7 @@ const httpServer = createServer(app);
 // Restrict origins to known frontend URLs; override via ALLOWED_ORIGINS env var.
 const ALLOWED_ORIGINS: string[] = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
-    : ["http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173"];
+    : ["http://localhost:5173", "http://localhost:5174", "http://127.0.0.1:5173", "https://guiltyguild.com", "https://www.guiltyguild.com"];
 
 const io = new Server(httpServer, {
     cors: { origin: ALLOWED_ORIGINS, methods: ["GET", "POST"] },
