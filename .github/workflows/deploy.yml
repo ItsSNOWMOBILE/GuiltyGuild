@@ -61,6 +61,20 @@ jobs:
           state-name: .ftp-deploy-sync-state-package.json
           exclude: |
             **/*
-            !package.json
             !package-lock.json
             node_modules/**
+
+      - name: Trigger Namecheap Passenger Restart
+        run: |
+          mkdir -p backend/tmp
+          touch backend/tmp/restart.txt
+          
+      - name: Deploy Passenger Restart File
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /backend/tmp/
+          local-dir: ./backend/tmp/
+          state-name: .ftp-deploy-sync-state-tmp
