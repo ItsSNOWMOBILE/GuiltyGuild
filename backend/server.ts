@@ -54,6 +54,13 @@ interface GameState {
 const app = express();
 const httpServer = createServer(app);
 
+// Allow AutoSSL domain validation (Namecheap places txt files in this directory)
+// We serve it statically so Namecheap's Sectigo validation bots can read the file to issue the cert.
+import path from "path";
+app.use('/.well-known', express.static(path.join(__dirname, '../../public_html/api/.well-known')));
+// As a fallback for different folder structures:
+app.use('/.well-known', express.static(path.join(__dirname, '../.well-known')));
+
 // Restrict origins to known frontend URLs; override via ALLOWED_ORIGINS env var.
 const ALLOWED_ORIGINS: string[] = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
