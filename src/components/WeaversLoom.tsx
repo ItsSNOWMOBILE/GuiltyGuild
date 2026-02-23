@@ -135,10 +135,10 @@ function SortableQuestionItem({ question, index, isCurrentQuestion, gameStatus, 
     <div
       ref={setNodeRef}
       style={style}
-      className={`bg - [#1a1a1a] p - 4 rounded border relative group flex items - start gap - 3 transition - opacity ${isCurrentQuestion
+      className={`bg-[#1a1a1a] p-4 rounded border relative group flex items-start gap-3 transition-opacity ${isCurrentQuestion
         ? 'border-[#FFD700] border-2 shadow-[0_0_20px_rgba(255,215,0,0.4)] animate-pulse'
         : 'border-[#00C2FF]/20 hover:border-[#00C2FF]/50'
-        } ${isDragging ? 'opacity-50 scale-[1.02] shadow-2xl' : ''} `}
+        } ${isDragging ? 'opacity-50 scale-[1.02] shadow-2xl' : ''}`}
     >
       {/* Current question indicator */}
       {isCurrentQuestion && (
@@ -161,14 +161,14 @@ function SortableQuestionItem({ question, index, isCurrentQuestion, gameStatus, 
       <div className="flex-1">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <p className={`mb - 2 font - medium ${isCurrentQuestion ? 'text-[#FFD700]' : 'text-[#00C2FF]'} `}>
+            <p className={`mb-2 font-medium ${isCurrentQuestion ? 'text-[#FFD700]' : 'text-[#00C2FF]'}`}>
               {index + 1}. {question.text}
             </p>
             <div className="grid grid-cols-2 gap-2 text-sm">
               {question.answers.map((answer, ansIdx) => (
                 <div
                   key={ansIdx}
-                  className={`flex items - center gap - 2 ${ansIdx === question.correctAnswer ? 'text-[#FFD700]' : 'text-[#6b7280]'} `}
+                  className={`flex items-center gap-2 ${ansIdx === question.correctAnswer ? 'text-[#FFD700]' : 'text-[#6b7280]'}`}
                 >
                   {ansIdx === question.correctAnswer && <CheckCircle className="w-3 h-3" />}
                   {String.fromCharCode(65 + ansIdx)}. {answer}
@@ -657,7 +657,7 @@ export function WeaversLoom({
                     type="number"
                     value={timeLimitSeconds}
                     onChange={(e) => onUpdateTimeLimit?.(parseInt(e.target.value) || 30)}
-                    className="w-20 bg-[#1a1a1a] border-[#00C2FF]/30 text-[#00C2FF]"
+                    className="w-20 bg-[#1a1a1a] border-[#00C2FF]/30 text-[#00C2FF] text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     min={5}
                     max={120}
                   />
@@ -692,7 +692,7 @@ export function WeaversLoom({
                     {newQuestion.answers.map((answer, index) => (
                       <div key={index}>
                         <div className="flex justify-between items-center mb-1">
-                          <Label htmlFor={`answer - ${index} `} className="text-[#00C2FF] text-sm">
+                          <Label htmlFor={`answer-${index}`} className="text-[#00C2FF] text-sm">
                             Answer {String.fromCharCode(65 + index)}
                           </Label>
                           {newQuestion.answers.length > 2 && (
@@ -712,19 +712,19 @@ export function WeaversLoom({
                         </div>
                         <div className="relative">
                           <Input
-                            id={`answer - ${index} `}
+                            id={`answer-${index}`}
                             value={answer}
                             onChange={(e) => {
                               const updated = [...newQuestion.answers];
                               updated[index] = e.target.value;
                               setNewQuestion({ ...newQuestion, answers: updated });
                             }}
-                            placeholder={`Answer ${index + 1} `}
-                            className={`bg - [#1a1a1a] border - [#00C2FF] / 30 text - [#00C2FF] ${newQuestion.correctAnswer === index ? 'border-[#FFD700] border-2' : ''} `}
+                            placeholder={`Answer ${index + 1}`}
+                            className={`bg-[#1a1a1a] border-[#00C2FF]/30 text-[#00C2FF] ${newQuestion.correctAnswer === index ? 'border-[#FFD700] border-2' : ''}`}
                           />
                           <button
                             onClick={() => setNewQuestion({ ...newQuestion, correctAnswer: index })}
-                            className={`absolute right - 2 top - 1 / 2 - translate - y - 1 / 2 ${newQuestion.correctAnswer === index ? 'text-[#FFD700]' : 'text-[#6b7280]'} `}
+                            className={`absolute right-2 top-1/2 -translate-y-1/2 ${newQuestion.correctAnswer === index ? 'text-[#FFD700]' : 'text-[#6b7280]'}`}
                             title="Mark as correct answer"
                           >
                             <CheckCircle className="w-4 h-4" />
