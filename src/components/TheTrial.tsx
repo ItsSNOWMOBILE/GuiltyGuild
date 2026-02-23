@@ -321,40 +321,57 @@ export function TheTrial({
 
         {/* Answer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-bottom-8 fade-in duration-700 delay-300">
-          {question?.answers.map((answer, index) => (
-            <button
-              key={index}
-              onClick={() => handleAnswerClick(index)}
-              disabled={hasAnswered || phase !== 'QUESTION_ACTIVE'}
-              className={getAnswerStyle(index)}
-            >
-              {/* Letter Key */}
-              <div className={`
-                   flex items-center justify-center w-10 h-10 rounded-lg border font-mono font-bold text-sm
-                   transition-colors duration-300 shrink-0
-                    ${phase === 'REVEAL_ANSWER' && question?.correctAnswer === index
-                  ? 'bg-green-900 border-[#4ADE80] text-[#4ADE80] shadow-[0_0_20px_rgba(74,222,128,0.6)]'
-                  : (selectedAnswer === index
-                    ? 'bg-[#2a0a45] border-[#FFD700] text-[#FFD700] shadow-[0_0_15px_rgba(255,215,0,0.6)]'
-                    : 'bg-[#0a0a0c] border-[#7c3aed] text-[#e9d5ff] group-hover:border-[#FFD700] group-hover:text-white group-hover:shadow-[0_0_10px_rgba(255,215,0,0.4)]')}
-                `}>
-                {letters[index]}
-              </div>
+          {question?.answers.map((answer, index) => {
+            const isSelected = selectedAnswer === index;
+            const isReveal = phase === 'REVEAL_ANSWER';
+            const isCorrect = isReveal && question?.correctAnswer === index;
+            const isWrongSelection = isReveal && isSelected && !isCorrect;
 
-              {/* Answer Text */}
-              <span className={`
-                   text-lg font-bold tracking-wide transition-colors duration-200
-                   ${(phase === 'REVEAL_ANSWER' && question?.correctAnswer === index)
-                  ? 'text-[#4ADE80] drop-shadow-[0_0_10px_rgba(74,222,128,0.8)]'
-                  : (selectedAnswer === index ? 'text-[#FFD700] drop-shadow-[0_0_5px_rgba(255,215,0,0.8)]' : 'text-gray-200 group-hover:text-white')}
-                `}>
-                {answer}
-              </span>
+            return (
+              <button
+                key={index}
+                onClick={() => handleAnswerClick(index)}
+                disabled={hasAnswered || phase !== 'QUESTION_ACTIVE'}
+                className={getAnswerStyle(index)}
+              >
+                {/* Letter Key */}
+                <div className={`
+                    flex items-center justify-center w-10 h-10 rounded-lg border font-mono font-bold text-sm
+                    transition-colors duration-300 shrink-0
+                      ${isCorrect
+                    ? 'bg-green-900 border-[#4ADE80] text-[#4ADE80] shadow-[0_0_20px_rgba(74,222,128,0.6)]'
+                    : isWrongSelection
+                      ? 'bg-red-900 border-red-500 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.6)]'
+                      : isReveal
+                        ? 'bg-[#0a0a0c] border-gray-800 text-gray-600'
+                        : isSelected
+                          ? 'bg-[#2a0a45] border-[#FFD700] text-[#FFD700] shadow-[0_0_15px_rgba(255,215,0,0.6)]'
+                          : 'bg-[#0a0a0c] border-[#7c3aed] text-[#e9d5ff] group-hover:border-[#FFD700] group-hover:text-white group-hover:shadow-[0_0_10px_rgba(255,215,0,0.4)]'}
+                  `}>
+                  {letters[index]}
+                </div>
 
-              {/* Hover Reveal Texture */}
-              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none" />
-            </button>
-          ))}
+                {/* Answer Text */}
+                <span className={`
+                    text-lg font-bold tracking-wide transition-colors duration-200
+                    ${isCorrect
+                    ? 'text-[#4ADE80] drop-shadow-[0_0_10px_rgba(74,222,128,0.8)] scale-105 transform origin-left inline-block'
+                    : isWrongSelection
+                      ? 'text-red-400 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)] line-through opacity-80'
+                      : isReveal
+                        ? 'text-gray-600'
+                        : isSelected ? 'text-[#FFD700] drop-shadow-[0_0_5px_rgba(255,215,0,0.8)]' : 'text-gray-200 group-hover:text-white'}
+                  `}>
+                  {answer}
+                </span>
+
+                {/* Hover Reveal Texture */}
+                {isCorrect && <div className="absolute inset-0 bg-green-500 opacity-10 animate-pulse pointer-events-none rounded-lg" />}
+                {isWrongSelection && <div className="absolute inset-0 bg-red-500 opacity-10 pointer-events-none rounded-lg" />}
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none" />
+              </button>
+            );
+          })}
         </div>
 
       </div>

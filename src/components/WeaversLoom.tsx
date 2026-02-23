@@ -655,12 +655,16 @@ export function WeaversLoom({
                 <div className="flex items-center gap-2">
                   <Label className="text-[#6b7280] text-sm">Time Limit:</Label>
                   <Input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     value={timeLimitSeconds}
-                    onChange={(e) => onUpdateTimeLimit?.(parseInt(e.target.value) || 30)}
-                    className="w-20 bg-[#1a1a1a] border-[#00C2FF]/30 text-[#00C2FF] text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    min={5}
-                    max={120}
+                    onChange={(e) => {
+                      const val = parseInt(e.target.value.replace(/[^0-9]/g, ''));
+                      if (!isNaN(val)) onUpdateTimeLimit?.(Math.min(120, Math.max(0, val)));
+                    }}
+                    onBlur={() => onUpdateTimeLimit?.(Math.max(5, Math.min(120, timeLimitSeconds)))}
+                    className="w-20 bg-[#1a1a1a] border-[#00C2FF]/30 text-[#00C2FF] text-center"
                   />
                   <span className="text-[#6b7280] text-sm">sec</span>
                 </div>
