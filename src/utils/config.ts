@@ -1,7 +1,10 @@
 // This would normally come from environment variables
 // For the frontend, we'll need to expose this through the backend
 // Base URL for API calls. Uses environment variable or falls back to localhost for dev
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ||
+  (typeof window !== 'undefined' && window.location.hostname.includes('guiltyguild.com')
+    ? 'https://api.guiltyguild.com'
+    : 'http://localhost:3001');
 
 export const DISCORD_CONFIG = {
   // Use Vite env var or fallback
