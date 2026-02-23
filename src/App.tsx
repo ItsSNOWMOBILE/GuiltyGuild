@@ -9,7 +9,7 @@ import { projectId, publicAnonKey } from "./utils/supabase/info";
 import { Toaster } from "./components/ui/sonner";
 import { toast } from "sonner";
 import { MysticBackground } from "./components/MysticBackground";
-import { DISCORD_CONFIG } from "./utils/config";
+import { DISCORD_CONFIG, API_BASE_URL } from "./utils/config";
 import { io, Socket } from "socket.io-client";
 
 // ---------------------------------------------------------------------------
@@ -78,7 +78,7 @@ type AppScreen = "login" | "waiting" | "lobby" | "quiz" | "admin" | "leaderboard
 // Constants
 // ---------------------------------------------------------------------------
 
-const API = "http://localhost:3001/make-server-983e2ba5";
+const API = `${API_BASE_URL}/make-server-983e2ba5`;
 
 const ALLOWED_HOSTS: readonly string[] = [
     "894118872712613898",
@@ -541,7 +541,7 @@ export default function App() {
     useEffect(() => {
         if (!gameId || !sessionId || sessionId === "demo-session" || gameId.startsWith("demo-")) return;
 
-        const socket: Socket = io("http://localhost:3001");
+        const socket: Socket = io(API_BASE_URL);
 
         socket.on("connect", () => {
             // Authenticate the socket join so the server can send personalised state

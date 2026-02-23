@@ -3,7 +3,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { projectId, publicAnonKey } from "../utils/supabase/info";
 import { MysticBackground } from "./MysticBackground";
-import { DISCORD_CONFIG } from "../utils/config";
+import { DISCORD_CONFIG, API_BASE_URL } from "../utils/config";
 
 interface User {
     id: string;
@@ -26,7 +26,7 @@ export function NightmareGate({ onLogin, error, isLoading, onDemoMode, user, onJ
 
     useEffect(() => {
         // Fetch Discord client ID from backend
-        fetch(`http://localhost:3001/make-server-983e2ba5/config/discord`, {
+        fetch(`${API_BASE_URL}/make-server-983e2ba5/config/discord`, {
             headers: {
                 Authorization: `Bearer ${publicAnonKey}`,
             },

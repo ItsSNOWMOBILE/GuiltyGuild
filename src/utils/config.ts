@@ -1,8 +1,12 @@
 // This would normally come from environment variables
 // For the frontend, we'll need to expose this through the backend
+// Base URL for API calls. Uses environment variable or falls back to localhost for dev
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+
 export const DISCORD_CONFIG = {
   // Use Vite env var or fallback
   clientId: import.meta.env.VITE_DISCORD_CLIENT_ID || "1448157938245173282",
+
   // Must match exactly what is in the Discord Developer Portal
   get redirectUri() {
     const base = import.meta.env.VITE_BASE_URL || (typeof window !== 'undefined' ? window.location.origin : "http://localhost:3001");

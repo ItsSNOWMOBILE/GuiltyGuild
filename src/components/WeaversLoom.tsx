@@ -22,6 +22,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Switch } from "./ui/switch";
 import { toast } from "sonner";
+import { API_BASE_URL } from "../utils/config";
 
 interface Question {
   id?: string;
@@ -265,7 +266,7 @@ export function WeaversLoom({
     setIsLoadingQuizzes(true);
     try {
       const response = await fetch(
-        `http://localhost:3001/make-server-983e2ba5/quiz/list`,
+        `${API_BASE_URL}/make-server-983e2ba5/quiz/list`,
         {
           headers: {
             Authorization: `Bearer ${publicAnonKey}`,
@@ -306,7 +307,7 @@ export function WeaversLoom({
     setIsSaving(true);
     try {
       const response = await fetch(
-        `http://localhost:3001/make-server-983e2ba5/quiz/create`,
+        `${API_BASE_URL}/make-server-983e2ba5/quiz/create`,
         {
           method: "POST",
           headers: {
@@ -347,7 +348,7 @@ export function WeaversLoom({
 
     try {
       const response = await fetch(
-        `http://localhost:3001/make-server-983e2ba5/quiz/${quizId}`,
+        `${API_BASE_URL}/make-server-983e2ba5/quiz/${quizId}`,
         {
           headers: {
             Authorization: `Bearer ${publicAnonKey}`,
@@ -380,7 +381,7 @@ export function WeaversLoom({
 
     try {
       const response = await fetch(
-        `http://localhost:3001/make-server-983e2ba5/quiz/${quizId}`,
+        `${API_BASE_URL}/make-server-983e2ba5/quiz/${quizId}`,
         {
           method: "DELETE",
           headers: {
