@@ -609,25 +609,9 @@ export default function App() {
     }, [gameId, gameState?.phase]);
 
     // -------------------------------------------------------------------------
-    // Host auto-advance: STARTING → QUESTION_ACTIVE after 3.5 s
-    // ONE effect only to avoid double-firing.
+    // Host auto-advance: STARTING → QUESTION_ACTIVE 
+    // Handled by onTimeUp callback from TheTrial.tsx now to ensure visual sync.
     // -------------------------------------------------------------------------
-
-    useEffect(() => {
-        if (!gameState || gameState.phase !== "STARTING") return;
-        if (!user || user.id !== gameState.hostId) return;
-        if (sessionId === "demo-session") return; // handled by demo effect above
-
-        const elapsed = Date.now() - gameState.phaseStartTime;
-        const delay = Math.max(0, 3500 - elapsed);
-
-        const timer = setTimeout(() => {
-            handleHostAction("next");
-        }, delay);
-
-        return () => clearTimeout(timer);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [gameState?.phase, gameState?.phaseStartTime, gameState?.hostId, user?.id, sessionId]);
 
     // -------------------------------------------------------------------------
     // Game actions
@@ -974,6 +958,12 @@ export default function App() {
                                     .findIndex(([id]) => id === user.id) + 1
                                 : 0
                         }
+                        isHost={user?.id === gameState.hostId}
+                        onTimeUp={() => {
+                            if (user?.id === gameState.hostId && gameState.phase === "STARTING") {
+                                handleHostAction("next");
+                            }
+                        }}
                     />
                     {/* Quick access to Weaver's Loom for the host */}
                     {user?.id === gameState.hostId && (

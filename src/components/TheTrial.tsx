@@ -37,6 +37,8 @@ interface TheTrialProps {
   roundResult?: RoundResult;
   score?: number;
   rank?: number;
+  isHost?: boolean;
+  onTimeUp?: () => void;
 }
 
 export function TheTrial({
@@ -51,6 +53,8 @@ export function TheTrial({
   roundResult,
   score = 0,
   rank = 0,
+  isHost = false,
+  onTimeUp,
 }: TheTrialProps) {
   const [timeRemaining, setTimeRemaining] = useState(timeLimit);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -70,18 +74,22 @@ export function TheTrial({
         newTime = Math.max(0, timeLimit - elapsedSec);
       }
 
-      // Debug: Log critical countdown moments
       if (phase === 'STARTING' && newTime <= 0.1) {
         console.log(`[Countdown DEBUG] STARTING Phase End. Time: ${newTime.toFixed(2)}`);
       }
 
       setTimeRemaining(newTime);
+
+      // Fire onTimeUp exactly when the timer zeroes out for the Host
+      if (newTime === 0 && phase === 'STARTING' && isHost && onTimeUp) {
+        onTimeUp();
+      }
     };
 
     updateTimer();
     const interval = setInterval(updateTimer, 200);
     return () => clearInterval(interval);
-  }, [phase, phaseStartTime, timeLimit]);
+  }, [phase, phaseStartTime, timeLimit, isHost, onTimeUp]);
 
   // Reset selected answer when question changes
   useEffect(() => {
@@ -127,9 +135,10 @@ export function TheTrial({
   const getAnswerStyle = (index: number) => {
     const isSelected = selectedAnswer === index;
     const isReveal = phase === 'REVEAL_ANSWER';
-    const isCorrect = isReveal && question?.correctAnswer === index;
+    const correctAnswerNum = question?.correctAnswer !== undefined ? Number(question.correctAnswer) : undefined;
+    const isCorrect = isReveal && correctAnswerNum === index;
     const isWrongSelection = isReveal && isSelected && !isCorrect;
-    // Base "Royal System" style
+    // Base "Royal System" or "Neon Cyan Host" style
     let baseStyle = `
       relative group w-full p-6 text-left transition-all duration-200
       border-2 rounded-lg backdrop-blur-xl overflow-hidden
@@ -141,13 +150,13 @@ export function TheTrial({
         // "Sovereign Green" - High priority focus
         return `${baseStyle} bg-green-900/90 border-[#4ADE80] shadow-[0_0_40px_rgba(74,222,128,0.7)] scale-[1.02] z-20`;
       }
-      if (isWrongSelection) {
+      if (isWrongSelection && !isHost) {
         return `${baseStyle} bg-red-950/80 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.3)] opacity-80`;
       }
       return `${baseStyle} bg-black/60 border-gray-700 opacity-30 grayscale blur-[1px]`;
     }
 
-    if (hasAnswered) {
+    if (hasAnswered && !isHost) {
       if (isSelected) {
         return `${baseStyle} bg-[#FFD700]/20 border-[#FFD700] shadow-[0_0_25px_rgba(255,215,0,0.6)]`;
       }
@@ -155,12 +164,20 @@ export function TheTrial({
     }
 
     // Active state styling
-    if (isSelected) {
+    if (isSelected && !isHost) {
       // High contrast selection (Royal Choice)
       return `${baseStyle} bg-[#2a0a45]/90 border-[#FFD700] shadow-[0_0_30px_rgba(255,215,0,0.5)] scale-[1.02]`;
     }
 
-    // Default State: Purple System Window
+    // Host View (Neon Cyan)
+    if (isHost) {
+      return `${baseStyle}
+        bg-[#0a0a0c]/90 border-[#00C2FF] text-[#00C2FF]
+        hover:bg-[#00C2FF]/10 text-white hover:shadow-[0_0_20px_rgba(0,194,255,0.4)]
+      `;
+    }
+
+    // Default Player State: Purple System Window
     return `${baseStyle} 
       bg-[#0a0a0cd9] border-[#7c3aed] 
       hover:bg-[#1a052b] hover:border-[#D946EF] hover:shadow-[0_0_20px_rgba(217,70,239,0.4)] hover:-translate-y-0.5
@@ -324,7 +341,8 @@ export function TheTrial({
           {question?.answers.map((answer, index) => {
             const isSelected = selectedAnswer === index;
             const isReveal = phase === 'REVEAL_ANSWER';
-            const isCorrect = isReveal && question?.correctAnswer === index;
+            const correctAnswerNum = question?.correctAnswer !== undefined ? Number(question.correctAnswer) : undefined;
+            const isCorrect = isReveal && correctAnswerNum === index;
             const isWrongSelection = isReveal && isSelected && !isCorrect;
 
             return (
@@ -340,13 +358,15 @@ export function TheTrial({
                     transition-colors duration-300 shrink-0
                       ${isCorrect
                     ? 'bg-green-900 border-[#4ADE80] text-[#4ADE80] shadow-[0_0_20px_rgba(74,222,128,0.6)]'
-                    : isWrongSelection
+                    : isWrongSelection && !isHost
                       ? 'bg-red-900 border-red-500 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.6)]'
                       : isReveal
                         ? 'bg-[#0a0a0c] border-gray-800 text-gray-600'
-                        : isSelected
+                        : isSelected && !isHost
                           ? 'bg-[#2a0a45] border-[#FFD700] text-[#FFD700] shadow-[0_0_15px_rgba(255,215,0,0.6)]'
-                          : 'bg-[#0a0a0c] border-[#7c3aed] text-[#e9d5ff] group-hover:border-[#FFD700] group-hover:text-white group-hover:shadow-[0_0_10px_rgba(255,215,0,0.4)]'}
+                          : isHost
+                            ? 'bg-[#0a0a0c] border-[#00C2FF] text-[#00C2FF] group-hover:bg-[#00C2FF]/20 group-hover:text-white'
+                            : 'bg-[#0a0a0c] border-[#7c3aed] text-[#e9d5ff] group-hover:border-[#FFD700] group-hover:text-white group-hover:shadow-[0_0_10px_rgba(255,215,0,0.4)]'}
                   `}>
                   {letters[index]}
                 </div>
@@ -356,18 +376,20 @@ export function TheTrial({
                     text-lg font-bold tracking-wide transition-colors duration-200
                     ${isCorrect
                     ? 'text-[#4ADE80] drop-shadow-[0_0_10px_rgba(74,222,128,0.8)] scale-105 transform origin-left inline-block'
-                    : isWrongSelection
+                    : isWrongSelection && !isHost
                       ? 'text-red-400 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)] line-through opacity-80'
                       : isReveal
                         ? 'text-gray-600'
-                        : isSelected ? 'text-[#FFD700] drop-shadow-[0_0_5px_rgba(255,215,0,0.8)]' : 'text-gray-200 group-hover:text-white'}
+                        : isSelected && !isHost ? 'text-[#FFD700] drop-shadow-[0_0_5px_rgba(255,215,0,0.8)]'
+                          : isHost ? 'text-[#00C2FF] group-hover:text-white'
+                            : 'text-gray-200 group-hover:text-white'}
                   `}>
                   {answer}
                 </span>
 
                 {/* Hover Reveal Texture */}
                 {isCorrect && <div className="absolute inset-0 bg-green-500 opacity-10 animate-pulse pointer-events-none rounded-lg" />}
-                {isWrongSelection && <div className="absolute inset-0 bg-red-500 opacity-10 pointer-events-none rounded-lg" />}
+                {isWrongSelection && !isHost && <div className="absolute inset-0 bg-red-500 opacity-10 pointer-events-none rounded-lg" />}
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none" />
               </button>
             );
