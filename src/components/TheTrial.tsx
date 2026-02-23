@@ -140,19 +140,19 @@ export function TheTrial({
     const isWrongSelection = isReveal && isSelected && !isCorrect;
     // Base "Royal System"
     let baseStyle = `
-      relative group w-full p-6 text-left transition-all duration-200
-      border-2 rounded-lg backdrop-blur-xl overflow-hidden
+      relative group w-full p-6 text-left transition-all duration-300
+      border-2 rounded-lg backdrop-blur-xl
       flex items-center gap-4
     `;
 
     if (isReveal) {
       if (isCorrect) {
-        // Correct Answer -> Outer Green Glow
-        return `${baseStyle} bg-[#0a0a0cd9] border-[#4ADE80] shadow-[0_0_40px_rgba(74,222,128,0.7)] scale-[1.02] z-20`;
+        // Correct Answer -> Massive Outer Green Glow
+        return `${baseStyle} bg-[#0a0a0cd9] border-[#4ADE80] shadow-[0_0_60px_rgba(74,222,128,0.8)] scale-[1.02] z-20`;
       }
       if (isWrongSelection) {
         // Wrong Selection -> Outer Red Glow
-        return `${baseStyle} bg-[#0a0a0cd9] border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.6)] z-10`;
+        return `${baseStyle} bg-[#0a0a0cd9] border-red-500 shadow-[0_0_40px_rgba(239,68,68,0.8)] z-10`;
       }
       return `${baseStyle} bg-black/60 border-gray-700 opacity-30 grayscale blur-[1px]`;
     }
@@ -173,7 +173,7 @@ export function TheTrial({
     // Default Player/Host State: Purple System Window
     return `${baseStyle} 
       bg-[#0a0a0cd9] border-[#7c3aed] 
-      hover:bg-[#1a052b] hover:border-[#D946EF] hover:shadow-[0_0_20px_rgba(217,70,239,0.4)] hover:-translate-y-0.5
+      hover:bg-[#1a052b] hover:border-[#D946EF] hover:shadow-[0_0_40px_rgba(217,70,239,0.7)] hover:-translate-y-1
     `;
   };
 
@@ -348,16 +348,16 @@ export function TheTrial({
                 {/* Letter Key */}
                 <div className={`
                     flex items-center justify-center w-10 h-10 rounded-lg border font-mono font-bold text-sm
-                    transition-colors duration-300 shrink-0
+                    transition-all duration-300 shrink-0 z-10
                       ${isCorrect
-                    ? 'bg-[#0a0a0c] border-[#4ADE80] text-[#4ADE80] shadow-[0_0_20px_rgba(74,222,128,0.6)]'
+                    ? 'bg-[#0a0a0c] border-[#4ADE80] text-[#4ADE80] shadow-[0_0_30px_rgba(74,222,128,0.8)]'
                     : isWrongSelection
-                      ? 'bg-[#0a0a0c] border-red-500 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.6)]'
+                      ? 'bg-[#0a0a0c] border-red-500 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.8)]'
                       : isReveal
                         ? 'bg-[#0a0a0c] border-gray-800 text-gray-600'
                         : isSelected
-                          ? 'bg-[#2a0a45] border-[#FFD700] text-[#FFD700] shadow-[0_0_15px_rgba(255,215,0,0.6)]'
-                          : 'bg-[#0a0a0c] border-[#7c3aed] text-[#e9d5ff] group-hover:border-[#FFD700] group-hover:text-white group-hover:shadow-[0_0_10px_rgba(255,215,0,0.4)]'}
+                          ? 'bg-[#2a0a45] border-[#FFD700] text-[#FFD700] shadow-[0_0_20px_rgba(255,215,0,0.8)]'
+                          : 'bg-[#0a0a0c] border-[#7c3aed] text-[#e9d5ff] group-hover:border-[#FFD700] group-hover:text-white group-hover:shadow-[0_0_20px_rgba(255,215,0,0.8)]'}
                   `}>
                   {letters[index]}
                 </div>
@@ -378,7 +378,7 @@ export function TheTrial({
                 </span>
 
                 {/* Hover Reveal Texture (subtle grain) */}
-                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none" />
+                <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none rounded-lg" />
               </button>
             );
           })}

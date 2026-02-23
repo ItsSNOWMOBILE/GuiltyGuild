@@ -660,10 +660,15 @@ export function WeaversLoom({
                     pattern="[0-9]*"
                     value={timeLimitSeconds}
                     onChange={(e) => {
-                      const val = parseInt(e.target.value.replace(/[^0-9]/g, ''));
-                      if (!isNaN(val)) onUpdateTimeLimit?.(Math.min(120, Math.max(0, val)));
+                      const raw = e.target.value.replace(/[^0-9]/g, '');
+                      if (raw === '') {
+                        onUpdateTimeLimit?.(0); // Temporarily allow 0/empty while typing
+                      } else {
+                        const val = parseInt(raw);
+                        onUpdateTimeLimit?.(Math.min(120, val));
+                      }
                     }}
-                    onBlur={() => onUpdateTimeLimit?.(Math.max(5, Math.min(120, timeLimitSeconds)))}
+                    onBlur={() => onUpdateTimeLimit?.(Math.max(5, Math.min(120, timeLimitSeconds || 5)))}
                     className="w-20 bg-[#1a1a1a] border-[#00C2FF]/30 text-[#00C2FF] text-center"
                   />
                   <span className="text-[#6b7280] text-sm">sec</span>
@@ -904,9 +909,10 @@ export function WeaversLoom({
       {/* Quiz Modal */}
       {showQuizModal && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-4">
-          <div className="bg-[#0a0a0a] border-2 border-[#00C2FF]/30 rounded-xl p-6 max-w-2xl w-full flex flex-col max-h-[90vh] overflow-hidden shadow-2xl">
-            <div className="flex items-center justify-between mb-6 shrink-0">
-              <h2 className="text-[#FFD700] text-xl">Quiz Manager</h2>
+          <div className="bg-[#0a0a0a] border-2 border-[#00C2FF]/30 rounded-xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-6 pb-4 shrink-0 border-b border-[#00C2FF]/20">
+              <h2 className="text-[#FFD700] text-xl font-bold">Quiz Manager</h2>
               <Button
                 onClick={() => setShowQuizModal(false)}
                 variant="ghost"
@@ -917,81 +923,85 @@ export function WeaversLoom({
               </Button>
             </div>
 
-            {/* Save new quiz form */}
-            <div className="mb-6 p-4 bg-[#1a1a1a] rounded-lg border border-[#FFD700]/30">
-              <h3 className="text-[#FFD700] mb-4 text-sm uppercase tracking-wider">Save Current Quiz</h3>
-              <div className="space-y-3">
-                <Input
-                  placeholder="Quiz Name"
-                  value={quizName}
-                  onChange={(e) => setQuizName(e.target.value)}
-                  className="bg-[#0a0a0a] border-[#00C2FF]/30 text-white"
-                />
-                <Input
-                  placeholder="Description (optional)"
-                  value={quizDescription}
-                  onChange={(e) => setQuizDescription(e.target.value)}
-                  className="bg-[#0a0a0a] border-[#00C2FF]/30 text-white"
-                />
-                <Button
-                  onClick={saveQuiz}
-                  disabled={isSaving || !quizName.trim() || questions.length === 0}
-                  className="w-full bg-gradient-to-r from-[#FFD700] to-[#cc9900] text-[#050505]"
-                >
-                  {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Save className="w-4 h-4 mr-2" />}
-                  Save Quiz ({questions.length} questions)
-                </Button>
+            {/* Scrollable Content Area */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
+              {/* Save new quiz form */}
+              <div className="p-5 bg-[#1a1a1a] rounded-lg border border-[#FFD700]/30 shadow-inner">
+                <h3 className="text-[#FFD700] mb-4 text-sm font-bold uppercase tracking-wider flex items-center gap-2">
+                  <Save className="w-4 h-4" /> Save Current Quiz
+                </h3>
+                <div className="space-y-4">
+                  <Input
+                    placeholder="Quiz Name"
+                    value={quizName}
+                    onChange={(e) => setQuizName(e.target.value)}
+                    className="bg-[#0a0a0a] border-[#00C2FF]/30 text-white focus:border-[#FFD700]"
+                  />
+                  <Input
+                    placeholder="Description (optional)"
+                    value={quizDescription}
+                    onChange={(e) => setQuizDescription(e.target.value)}
+                    className="bg-[#0a0a0a] border-[#00C2FF]/30 text-white focus:border-[#FFD700]"
+                  />
+                  <Button
+                    onClick={saveQuiz}
+                    disabled={isSaving || !quizName.trim() || questions.length === 0}
+                    className="w-full bg-gradient-to-r from-[#FFD700] to-[#cc9900] text-[#050505] hover:opacity-90 font-bold"
+                  >
+                    {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                    Save Quiz ({questions.length} questions)
+                  </Button>
+                </div>
               </div>
-            </div>
 
-            {/* Saved quizzes list */}
-            <div className="overflow-y-auto flex-1 pr-2 min-h-0">
-              <div className="sticky top-0 bg-[#0a0a0a] pb-2 pt-1 z-10 border-b border-[#00C2FF]/20 mb-4">
-                <h3 className="text-[#00C2FF] text-sm uppercase tracking-wider">Saved Quizzes</h3>
+              {/* Saved quizzes list */}
+              <div>
+                <h3 className="text-[#00C2FF] text-sm font-bold uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <FolderOpen className="w-4 h-4" /> Saved Quizzes
+                </h3>
+                {isLoadingQuizzes ? (
+                  <div className="text-center py-8">
+                    <Loader2 className="w-8 h-8 animate-spin text-[#00C2FF] mx-auto" />
+                  </div>
+                ) : savedQuizzes.length === 0 ? (
+                  <p className="text-[#6b7280] text-center py-8">No saved quizzes yet</p>
+                ) : (
+                  <div className="space-y-3">
+                    {savedQuizzes.map((quiz) => (
+                      <div
+                        key={quiz.id}
+                        className="flex items-center justify-between p-4 bg-[#1a1a1a] rounded-lg border border-[#00C2FF]/20 hover:border-[#00C2FF]/40 transition-colors"
+                      >
+                        <div className="flex-1">
+                          <h4 className="text-white font-medium">{quiz.name}</h4>
+                          <p className="text-[#6b7280] text-sm">
+                            {quiz.questionCount} questions • {quiz.timeLimitSeconds}s per question
+                          </p>
+                          {quiz.description && (
+                            <p className="text-[#6b7280] text-xs mt-1">{quiz.description}</p>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            onClick={() => loadQuiz(quiz.id)}
+                            size="sm"
+                            className="bg-[#00C2FF]/20 text-[#00C2FF] hover:bg-[#00C2FF]/30"
+                          >
+                            Load
+                          </Button>
+                          <Button
+                            onClick={() => deleteQuiz(quiz.id)}
+                            size="sm"
+                            variant="ghost"
+                            className="text-red-500 hover:text-red-400 hover:bg-red-900/20"
+                          >
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              {isLoadingQuizzes ? (
-                <div className="text-center py-8">
-                  <Loader2 className="w-8 h-8 animate-spin text-[#00C2FF] mx-auto" />
-                </div>
-              ) : savedQuizzes.length === 0 ? (
-                <p className="text-[#6b7280] text-center py-8">No saved quizzes yet</p>
-              ) : (
-                <div className="space-y-3">
-                  {savedQuizzes.map((quiz) => (
-                    <div
-                      key={quiz.id}
-                      className="flex items-center justify-between p-4 bg-[#1a1a1a] rounded-lg border border-[#00C2FF]/20 hover:border-[#00C2FF]/40 transition-colors"
-                    >
-                      <div className="flex-1">
-                        <h4 className="text-white font-medium">{quiz.name}</h4>
-                        <p className="text-[#6b7280] text-sm">
-                          {quiz.questionCount} questions • {quiz.timeLimitSeconds}s per question
-                        </p>
-                        {quiz.description && (
-                          <p className="text-[#6b7280] text-xs mt-1">{quiz.description}</p>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          onClick={() => loadQuiz(quiz.id)}
-                          size="sm"
-                          className="bg-[#00C2FF]/20 text-[#00C2FF] hover:bg-[#00C2FF]/30"
-                        >
-                          Load
-                        </Button>
-                        <Button
-                          onClick={() => deleteQuiz(quiz.id)}
-                          size="sm"
-                          variant="ghost"
-                          className="text-red-500 hover:text-red-400 hover:bg-red-900/20"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         </div>
