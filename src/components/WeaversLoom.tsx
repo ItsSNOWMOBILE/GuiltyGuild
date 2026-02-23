@@ -136,8 +136,8 @@ function SortableQuestionItem({ question, index, isCurrentQuestion, gameStatus, 
       ref={setNodeRef}
       style={style}
       className={`bg - [#1a1a1a] p - 4 rounded border relative group flex items - start gap - 3 transition - opacity ${isCurrentQuestion
-          ? 'border-[#FFD700] border-2 shadow-[0_0_20px_rgba(255,215,0,0.4)] animate-pulse'
-          : 'border-[#00C2FF]/20 hover:border-[#00C2FF]/50'
+        ? 'border-[#FFD700] border-2 shadow-[0_0_20px_rgba(255,215,0,0.4)] animate-pulse'
+        : 'border-[#00C2FF]/20 hover:border-[#00C2FF]/50'
         } ${isDragging ? 'opacity-50 scale-[1.02] shadow-2xl' : ''} `}
     >
       {/* Current question indicator */}
@@ -297,10 +297,10 @@ export function WeaversLoom({
     setIsLoadingQuizzes(true);
     try {
       const response = await fetch(
-        `${API_BASE_URL} /make-server-983e2ba5/quiz / list`,
+        `${API_BASE_URL}/make-server-983e2ba5/quiz/list`,
         {
           headers: {
-            Authorization: `Bearer ${publicAnonKey} `,
+            Authorization: `Bearer ${publicAnonKey}`,
             "X-Session-ID": sessionId,
           },
         }
@@ -338,12 +338,12 @@ export function WeaversLoom({
     setIsSaving(true);
     try {
       const response = await fetch(
-        `${API_BASE_URL} /make-server-983e2ba5/quiz / create`,
+        `${API_BASE_URL}/make-server-983e2ba5/quiz/create`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${publicAnonKey} `,
+            Authorization: `Bearer ${publicAnonKey}`,
             "X-Session-ID": sessionId,
           },
           body: JSON.stringify({
@@ -379,10 +379,10 @@ export function WeaversLoom({
 
     try {
       const response = await fetch(
-        `${API_BASE_URL} /make-server-983e2ba5/quiz / ${quizId} `,
+        `${API_BASE_URL}/make-server-983e2ba5/quiz/${quizId}`,
         {
           headers: {
-            Authorization: `Bearer ${publicAnonKey} `,
+            Authorization: `Bearer ${publicAnonKey}`,
             "X-Session-ID": sessionId,
           },
         }
@@ -412,11 +412,11 @@ export function WeaversLoom({
 
     try {
       const response = await fetch(
-        `${API_BASE_URL} /make-server-983e2ba5/quiz / ${quizId} `,
+        `${API_BASE_URL}/make-server-983e2ba5/quiz/${quizId}`,
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${publicAnonKey} `,
+            Authorization: `Bearer ${publicAnonKey}`,
             "X-Session-ID": sessionId,
           },
         }
