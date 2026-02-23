@@ -809,6 +809,10 @@ app.delete("/make-server-983e2ba5/quiz/:quizId", async (req, res) => {
 // Health check
 // ---------------------------------------------------------------------------
 
+app.get("/", (_req, res) => {
+    res.send("Guilty Guild API is running!");
+});
+
 app.get("/make-server-983e2ba5/health", (_req, res) =>
     res.json({ status: "ok", timestamp: Date.now() })
 );
