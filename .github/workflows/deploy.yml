@@ -32,6 +32,8 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: ${{ secrets.REMOTE_PATH }}
           local-dir: ./build/
+          exclude: |
+            **/.well-known/**
           
       - name: Install Backend Dependencies
         run: npm ci
@@ -52,6 +54,7 @@ jobs:
           exclude: |
             **/*.sqlite
             **/*.sqlite-*
+            **/.well-known/**
           
       - name: Deploy Backend package.json via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
