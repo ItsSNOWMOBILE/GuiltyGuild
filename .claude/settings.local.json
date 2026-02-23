@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(cd /c/Users/jaype/guiltyguild/backend && npx tsc 2>&1)",
+      "Bash(echo TypeScript OK:*)",
+      "Bash(sqlite3:*)",
+      "Bash(node:*)",
+      "Bash(timeout 8 bash:*)",
+      "Bash(curl:*)",
+      "Bash(ls:*)",
+      "Bash(echo TS OK:*)",
+      "Bash(cd \"C:/Users/jaype/guiltyguild/backend\" && npm test 2>&1)",
+      "Bash(cd:*)"
+    ]
+  }
+}

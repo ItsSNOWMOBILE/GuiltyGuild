@@ -1,0 +1,252 @@
+
+> backend@1.0.0 test
+> cross-env NODE_ENV=test jest --runInBand
+
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+FAIL tests/quiz.test.ts
+  ● Console
+
+    console.log
+      [dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+
+      at _log (node_modules/dotenv/lib/main.js:139:11)
+
+    console.warn
+      ⚠  DISCORD_CLIENT_SECRET is not set. Discord OAuth will fail.
+
+    [0m [90m 78 |[39m [36mconst[39m [33mDISCORD_CLIENT_SECRET[39m [33m=[39m process[33m.[39menv[33m.[39m[33mDISCORD_CLIENT_SECRET[39m[33m;[39m
+     [90m 79 |[39m [36mif[39m ([33m![39m[33mDISCORD_CLIENT_SECRET[39m) {
+    [31m[1m>[22m[39m[90m 80 |[39m     console[33m.[39mwarn([32m"⚠  DISCORD_CLIENT_SECRET is not set. Discord OAuth will fail."[39m)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 81 |[39m }
+     [90m 82 |[39m
+     [90m 83 |[39m [36mconst[39m [33mALLOWED_HOSTS[39m[33m:[39m readonly string[] [33m=[39m [[0m
+
+      at Object.<anonymous> (server.ts:80:13)
+      at Object.<anonymous> (tests/helpers.ts:10:1)
+      at Object.<anonymous> (tests/quiz.test.ts:3:1)
+
+  ● Quiz auth guards › GET /quiz/list returns 401 with no session
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 401
+    Received: 403
+
+    [0m [90m 37 |[39m     it([32m"GET /quiz/list returns 401 with no session"[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m 38 |[39m         [36mconst[39m res [33m=[39m [36mawait[39m request(app)[33m.[39m[36mget[39m([32m`${P}/quiz/list`[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 39 |[39m         expect(res[33m.[39mstatus)[33m.[39mtoBe([35m401[39m)[33m;[39m
+     [90m    |[39m                            [31m[1m^[22m[39m
+     [90m 40 |[39m     })[33m;[39m
+     [90m 41 |[39m })[33m;[39m
+     [90m 42 |[39m[0m
+
+      at Object.<anonymous> (tests/quiz.test.ts:39:28)
+
+  ● POST /quiz/create › clamps timeLimitSeconds between 5 and 120
+
+    TypeError: Cannot read properties of undefined (reading 'timeLimitSeconds')
+
+    [0m [90m 71 |[39m                 timeLimitSeconds[33m:[39m [35m999[39m[33m,[39m
+     [90m 72 |[39m             })[33m;[39m
+    [31m[1m>[22m[39m[90m 73 |[39m         expect(res[33m.[39mbody[33m.[39mquiz[33m.[39mtimeLimitSeconds)[33m.[39mtoBe([35m120[39m)[33m;[39m
+     [90m    |[39m                              [31m[1m^[22m[39m
+     [90m 74 |[39m     })[33m;[39m
+     [90m 75 |[39m })[33m;[39m
+     [90m 76 |[39m[0m
+
+      at Object.<anonymous> (tests/quiz.test.ts:73:30)
+
+  ● GET /quiz/list › returns all created quizzes
+
+    expect(received).toHaveLength(expected)
+
+    Expected length: 2
+    Received length: 0
+    Received array:  []
+
+    [0m [90m  99 |[39m             [33m.[39m[36mget[39m([32m`${P}/quiz/list`[39m)
+     [90m 100 |[39m             [33m.[39m[36mset[39m([32m"X-Session-ID"[39m[33m,[39m [33mHOST_SESSION_ID[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 101 |[39m         expect(res[33m.[39mbody[33m.[39mquizzes)[33m.[39mtoHaveLength([35m2[39m)[33m;[39m
+     [90m     |[39m                                  [31m[1m^[22m[39m
+     [90m 102 |[39m     })[33m;[39m
+     [90m 103 |[39m })[33m;[39m
+     [90m 104 |[39m[0m
+
+      at Object.<anonymous> (tests/quiz.test.ts:101:34)
+
+  ● GET /quiz/:id › returns the quiz for a valid id
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+    [0m [90m 118 |[39m             [33m.[39m[36mset[39m([32m"X-Session-ID"[39m[33m,[39m [33mHOST_SESSION_ID[39m)
+     [90m 119 |[39m             [33m.[39msend({ name[33m:[39m [32m"Fetch Me"[39m[33m,[39m questions[33m:[39m [] })[33m;[39m
+    [31m[1m>[22m[39m[90m 120 |[39m         [36mconst[39m quizId [33m=[39m create[33m.[39mbody[33m.[39mquiz[33m.[39mid[33m;[39m
+     [90m     |[39m                                         [31m[1m^[22m[39m
+     [90m 121 |[39m
+     [90m 122 |[39m         [36mconst[39m res [33m=[39m [36mawait[39m request(app)
+     [90m 123 |[39m             [33m.[39m[36mget[39m([32m`${P}/quiz/${quizId}`[39m)[0m
+
+      at Object.<anonymous> (tests/quiz.test.ts:120:41)
+
+  ● PUT /quiz/:id › allows creator to update
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+    [0m [90m 136 |[39m             [33m.[39m[36mset[39m([32m"X-Session-ID"[39m[33m,[39m [33mHOST_SESSION_ID[39m)
+     [90m 137 |[39m             [33m.[39msend({ name[33m:[39m [32m"Old Name"[39m[33m,[39m questions[33m:[39m [] })[33m;[39m
+    [31m[1m>[22m[39m[90m 138 |[39m         [36mconst[39m quizId [33m=[39m create[33m.[39mbody[33m.[39mquiz[33m.[39mid[33m;[39m
+     [90m     |[39m                                         [31m[1m^[22m[39m
+     [90m 139 |[39m
+     [90m 140 |[39m         [36mconst[39m res [33m=[39m [36mawait[39m request(app)
+     [90m 141 |[39m             [33m.[39mput([32m`${P}/quiz/${quizId}`[39m)[0m
+
+      at Object.<anonymous> (tests/quiz.test.ts:138:41)
+
+  ● PUT /quiz/:id › returns 403 when a different host tries to edit
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+    [0m [90m 151 |[39m             [33m.[39m[36mset[39m([32m"X-Session-ID"[39m[33m,[39m [33mHOST_SESSION_ID[39m)
+     [90m 152 |[39m             [33m.[39msend({ name[33m:[39m [32m"Owned Quiz"[39m[33m,[39m questions[33m:[39m [] })[33m;[39m
+    [31m[1m>[22m[39m[90m 153 |[39m         [36mconst[39m quizId [33m=[39m create[33m.[39mbody[33m.[39mquiz[33m.[39mid[33m;[39m
+     [90m     |[39m                                         [31m[1m^[22m[39m
+     [90m 154 |[39m
+     [90m 155 |[39m         [36mconst[39m res [33m=[39m [36mawait[39m request(app)
+     [90m 156 |[39m             [33m.[39mput([32m`${P}/quiz/${quizId}`[39m)[0m
+
+      at Object.<anonymous> (tests/quiz.test.ts:153:41)
+
+  ● DELETE /quiz/:id › allows creator to delete
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+    [0m [90m 169 |[39m             [33m.[39m[36mset[39m([32m"X-Session-ID"[39m[33m,[39m [33mHOST_SESSION_ID[39m)
+     [90m 170 |[39m             [33m.[39msend({ name[33m:[39m [32m"Delete Me"[39m[33m,[39m questions[33m:[39m [] })[33m;[39m
+    [31m[1m>[22m[39m[90m 171 |[39m         [36mconst[39m quizId [33m=[39m create[33m.[39mbody[33m.[39mquiz[33m.[39mid[33m;[39m
+     [90m     |[39m                                         [31m[1m^[22m[39m
+     [90m 172 |[39m
+     [90m 173 |[39m         [36mconst[39m del [33m=[39m [36mawait[39m request(app)
+     [90m 174 |[39m             [33m.[39m[36mdelete[39m([32m`${P}/quiz/${quizId}`[39m)[0m
+
+      at Object.<anonymous> (tests/quiz.test.ts:171:41)
+
+  ● DELETE /quiz/:id › returns 403 when a different host tries to delete
+
+    TypeError: Cannot read properties of undefined (reading 'id')
+
+    [0m [90m 188 |[39m             [33m.[39m[36mset[39m([32m"X-Session-ID"[39m[33m,[39m [33mHOST_SESSION_ID[39m)
+     [90m 189 |[39m             [33m.[39msend({ name[33m:[39m [32m"Protected"[39m[33m,[39m questions[33m:[39m [] })[33m;[39m
+    [31m[1m>[22m[39m[90m 190 |[39m         [36mconst[39m quizId [33m=[39m create[33m.[39mbody[33m.[39mquiz[33m.[39mid[33m;[39m
+     [90m     |[39m                                         [31m[1m^[22m[39m
+     [90m 191 |[39m
+     [90m 192 |[39m         [36mconst[39m res [33m=[39m [36mawait[39m request(app)
+     [90m 193 |[39m             [33m.[39m[36mdelete[39m([32m`${P}/quiz/${quizId}`[39m)[0m
+
+      at Object.<anonymous> (tests/quiz.test.ts:190:41)
+
+PASS tests/game.test.ts
+  ● Console
+
+    console.log
+      [dotenv@17.3.1] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+
+      at _log (node_modules/dotenv/lib/main.js:139:11)
+
+    console.warn
+      ⚠  DISCORD_CLIENT_SECRET is not set. Discord OAuth will fail.
+
+    [0m [90m 78 |[39m [36mconst[39m [33mDISCORD_CLIENT_SECRET[39m [33m=[39m process[33m.[39menv[33m.[39m[33mDISCORD_CLIENT_SECRET[39m[33m;[39m
+     [90m 79 |[39m [36mif[39m ([33m![39m[33mDISCORD_CLIENT_SECRET[39m) {
+    [31m[1m>[22m[39m[90m 80 |[39m     console[33m.[39mwarn([32m"⚠  DISCORD_CLIENT_SECRET is not set. Discord OAuth will fail."[39m)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 81 |[39m }
+     [90m 82 |[39m
+     [90m 83 |[39m [36mconst[39m [33mALLOWED_HOSTS[39m[33m:[39m readonly string[] [33m=[39m [[0m
+
+      at Object.<anonymous> (server.ts:80:13)
+      at Object.<anonymous> (tests/helpers.ts:10:1)
+      at Object.<anonymous> (tests/game.test.ts:3:1)
+
+PASS tests/auth.test.ts
+  ● Console
+
+    console.log
+      [dotenv@17.3.1] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+
+      at _log (node_modules/dotenv/lib/main.js:139:11)
+
+    console.warn
+      ⚠  DISCORD_CLIENT_SECRET is not set. Discord OAuth will fail.
+
+    [0m [90m 78 |[39m [36mconst[39m [33mDISCORD_CLIENT_SECRET[39m [33m=[39m process[33m.[39menv[33m.[39m[33mDISCORD_CLIENT_SECRET[39m[33m;[39m
+     [90m 79 |[39m [36mif[39m ([33m![39m[33mDISCORD_CLIENT_SECRET[39m) {
+    [31m[1m>[22m[39m[90m 80 |[39m     console[33m.[39mwarn([32m"⚠  DISCORD_CLIENT_SECRET is not set. Discord OAuth will fail."[39m)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 81 |[39m }
+     [90m 82 |[39m
+     [90m 83 |[39m [36mconst[39m [33mALLOWED_HOSTS[39m[33m:[39m readonly string[] [33m=[39m [[0m
+
+      at Object.<anonymous> (server.ts:80:13)
+      at Object.<anonymous> (tests/helpers.ts:10:1)
+      at Object.<anonymous> (tests/auth.test.ts:3:1)
+
+PASS tests/diagnostic.test.ts
+  ● Console
+
+    console.log
+      DB_PATH = :memory:
+
+      at Object.<anonymous> (tests/diagnostic.test.ts:3:13)
+
+    console.log
+      NODE_ENV = test
+
+      at Object.<anonymous> (tests/diagnostic.test.ts:4:13)
+
+    console.log
+      db exports: [
+        'set',
+        'get',
+        'del',
+        'getByPrefix',
+        'deleteByPrefix',
+        'getSessionByUserId'
+      ]
+
+      at Object.<anonymous> (tests/diagnostic.test.ts:13:17)
+
+    console.log
+      [dotenv@17.3.1] injecting env (0) from .env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+
+      at _log (node_modules/dotenv/lib/main.js:139:11)
+
+    console.warn
+      ⚠  DISCORD_CLIENT_SECRET is not set. Discord OAuth will fail.
+
+    [0m [90m 78 |[39m [36mconst[39m [33mDISCORD_CLIENT_SECRET[39m [33m=[39m process[33m.[39menv[33m.[39m[33mDISCORD_CLIENT_SECRET[39m[33m;[39m
+     [90m 79 |[39m [36mif[39m ([33m![39m[33mDISCORD_CLIENT_SECRET[39m) {
+    [31m[1m>[22m[39m[90m 80 |[39m     console[33m.[39mwarn([32m"⚠  DISCORD_CLIENT_SECRET is not set. Discord OAuth will fail."[39m)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 81 |[39m }
+     [90m 82 |[39m
+     [90m 83 |[39m [36mconst[39m [33mALLOWED_HOSTS[39m[33m:[39m readonly string[] [33m=[39m [[0m
+
+      at Object.<anonymous> (server.ts:80:13)
+      at Object.<anonymous> (tests/diagnostic.test.ts:24:21)
+
+    console.log
+      server exports: [ 'app', 'httpServer' ]
+
+      at Object.<anonymous> (tests/diagnostic.test.ts:25:17)
+
+
+Test Suites: 1 failed, 3 passed, 4 total
+Tests:       8 failed, 41 passed, 49 total
+Snapshots:   0 total
+Time:        1.618 s, estimated 2 s
+Ran all test suites.
