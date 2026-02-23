@@ -185,13 +185,17 @@ async function broadcastToGame(gameId: string, game: GameState): Promise<void> {
         const room = io.sockets.adapter.rooms.get(`game:${gameId}`);
         if (!room) return;
 
+        const playerData = await buildPlayerData(game);
+
         for (const socketId of room) {
             const info = socketUsers.get(socketId);
             const socket = io.sockets.sockets.get(socketId);
             if (!socket) continue;
 
             const userId = info?.userId ?? 'ANONYMOUS';
-            socket.emit('state_update', sanitizeGameState(game, userId));
+            const sanitized = sanitizeGameState(game, userId) as any;
+            sanitized.playerData = playerData;
+            socket.emit('state_update', sanitized);
         }
     } catch (err) {
         console.error("broadcastToGame error:", err);
@@ -243,7 +247,10 @@ io.on("connection", (socket) => {
         // Immediately push current state to the newly-joined socket.
         const game: GameState | null = await kv.get(`game:${gameId}`);
         if (game) {
-            socket.emit('state_update', sanitizeGameState(game, session.userId));
+            const playerData = await buildPlayerData(game);
+            const sanitized = sanitizeGameState(game, session.userId) as any;
+            sanitized.playerData = playerData;
+            socket.emit('state_update', sanitized);
         }
     });
 
@@ -506,7 +513,12 @@ app.post("/make-server-983e2ba5/game/:gameId/start", async (req, res) => {
 
     await kv.set(`game:${req.params.gameId}`, game);
     await broadcastToGame(req.params.gameId, game);
-    return res.json({ success: true, gameState: game });
+
+    const playerData = await buildPlayerData(game);
+    const sanitized = sanitizeGameState(game, session.userId) as any;
+    sanitized.playerData = playerData;
+
+    return res.json({ success: true, gameState: sanitized });
 });
 
 /**
@@ -541,7 +553,12 @@ app.post("/make-server-983e2ba5/game/:gameId/next", async (req, res) => {
 
     await kv.set(`game:${req.params.gameId}`, game);
     await broadcastToGame(req.params.gameId, game);
-    return res.json({ success: true, gameState: game });
+
+    const playerData = await buildPlayerData(game);
+    const sanitized = sanitizeGameState(game, session.userId) as any;
+    sanitized.playerData = playerData;
+
+    return res.json({ success: true, gameState: sanitized });
 });
 
 /**
@@ -639,7 +656,12 @@ app.post("/make-server-983e2ba5/game/:gameId/reveal", async (req, res) => {
     game.phase = 'REVEAL_ANSWER';
     await kv.set(`game:${req.params.gameId}`, game);
     await broadcastToGame(req.params.gameId, game);
-    return res.json({ success: true, gameState: game });
+
+    const playerData = await buildPlayerData(game);
+    const sanitized = sanitizeGameState(game, session.userId) as any;
+    sanitized.playerData = playerData;
+
+    return res.json({ success: true, gameState: sanitized });
 });
 
 /** POST /game/:gameId/leaderboard  (host only) */
@@ -654,7 +676,12 @@ app.post("/make-server-983e2ba5/game/:gameId/leaderboard", async (req, res) => {
     game.phase = 'LEADERBOARD';
     await kv.set(`game:${req.params.gameId}`, game);
     await broadcastToGame(req.params.gameId, game);
-    return res.json({ success: true, gameState: game });
+
+    const playerData = await buildPlayerData(game);
+    const sanitized = sanitizeGameState(game, session.userId) as any;
+    sanitized.playerData = playerData;
+
+    return res.json({ success: true, gameState: sanitized });
 });
 
 /** POST /game/:gameId/reset  (host only) – resets to LOBBY keeping same players */
@@ -677,7 +704,12 @@ app.post("/make-server-983e2ba5/game/:gameId/reset", async (req, res) => {
     await kv.set(`game:${req.params.gameId}`, game);
     await kv.set("activeGame", req.params.gameId); // Ensure it's still marked active
     await broadcastToGame(req.params.gameId, game);
-    return res.json({ success: true, gameState: game });
+
+    const playerData = await buildPlayerData(game);
+    const sanitized = sanitizeGameState(game, session.userId) as any;
+    sanitized.playerData = playerData;
+
+    return res.json({ success: true, gameState: sanitized });
 });
 
 /** POST /debug/reset-server  (allowed hosts only) – terminates the active game */
