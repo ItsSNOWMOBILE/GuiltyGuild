@@ -1,5 +1,23 @@
 import { useState, useEffect, useCallback } from "react";
-import { Eye, EyeOff, SkipForward, Plus, Trash2, CheckCircle, XCircle, Play, Trophy, Save, FolderOpen, Clock, Users, Zap, Loader2, GripVertical } from "lucide-react";
+import {
+  Trash2,
+  Play,
+  Settings,
+  XCircle,
+  SkipForward,
+  Trophy,
+  Loader2,
+  FolderOpen,
+  Save,
+  Plus,
+  Zap,
+  Users,
+  Eye,
+  EyeOff,
+  CheckCircle,
+  GripVertical,
+  Edit2
+} from "lucide-react";
 import {
   DndContext,
   closestCenter,
@@ -94,9 +112,10 @@ interface SortableQuestionItemProps {
   isCurrentQuestion: boolean;
   gameStatus: GamePhase;
   handleDeleteQuestion: (index: number) => void;
+  handleEditQuestion: (index: number) => void;
 }
 
-function SortableQuestionItem({ question, index, isCurrentQuestion, gameStatus, handleDeleteQuestion }: SortableQuestionItemProps) {
+function SortableQuestionItem({ question, index, isCurrentQuestion, gameStatus, handleDeleteQuestion, handleEditQuestion }: SortableQuestionItemProps) {
   const {
     attributes,
     listeners,
@@ -116,10 +135,10 @@ function SortableQuestionItem({ question, index, isCurrentQuestion, gameStatus, 
     <div
       ref={setNodeRef}
       style={style}
-      className={`bg-[#1a1a1a] p-4 rounded border relative group flex items-start gap-3 transition-opacity ${isCurrentQuestion
-        ? 'border-[#FFD700] border-2 shadow-[0_0_20px_rgba(255,215,0,0.4)] animate-pulse'
-        : 'border-[#00C2FF]/20 hover:border-[#00C2FF]/50'
-        } ${isDragging ? 'opacity-50 scale-[1.02] shadow-2xl' : ''}`}
+      className={`bg - [#1a1a1a] p - 4 rounded border relative group flex items - start gap - 3 transition - opacity ${isCurrentQuestion
+          ? 'border-[#FFD700] border-2 shadow-[0_0_20px_rgba(255,215,0,0.4)] animate-pulse'
+          : 'border-[#00C2FF]/20 hover:border-[#00C2FF]/50'
+        } ${isDragging ? 'opacity-50 scale-[1.02] shadow-2xl' : ''} `}
     >
       {/* Current question indicator */}
       {isCurrentQuestion && (
@@ -142,14 +161,14 @@ function SortableQuestionItem({ question, index, isCurrentQuestion, gameStatus, 
       <div className="flex-1">
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <p className={`mb-2 font-medium ${isCurrentQuestion ? 'text-[#FFD700]' : 'text-[#00C2FF]'}`}>
+            <p className={`mb - 2 font - medium ${isCurrentQuestion ? 'text-[#FFD700]' : 'text-[#00C2FF]'} `}>
               {index + 1}. {question.text}
             </p>
             <div className="grid grid-cols-2 gap-2 text-sm">
               {question.answers.map((answer, ansIdx) => (
                 <div
                   key={ansIdx}
-                  className={`flex items-center gap-2 ${ansIdx === question.correctAnswer ? 'text-[#FFD700]' : 'text-[#6b7280]'}`}
+                  className={`flex items - center gap - 2 ${ansIdx === question.correctAnswer ? 'text-[#FFD700]' : 'text-[#6b7280]'} `}
                 >
                   {ansIdx === question.correctAnswer && <CheckCircle className="w-3 h-3" />}
                   {String.fromCharCode(65 + ansIdx)}. {answer}
@@ -159,14 +178,26 @@ function SortableQuestionItem({ question, index, isCurrentQuestion, gameStatus, 
           </div>
 
           {(gameStatus === "LOBBY" || gameStatus === "OFFLINE") && (
-            <Button
-              onClick={() => handleDeleteQuestion(index)}
-              variant="ghost"
-              size="sm"
-              className="text-[#880015] hover:text-[#aa0020] hover:bg-[#880015]/10 shrink-0"
-            >
-              <Trash2 className="w-4 h-4" />
-            </Button>
+            <div className="flex flex-col gap-2 shrink-0">
+              <Button
+                onClick={() => handleEditQuestion(index)}
+                variant="ghost"
+                size="sm"
+                className="text-[#cc9900] hover:text-[#FFD700] hover:bg-[#FFD700]/10"
+                title="Edit Question"
+              >
+                <Edit2 className="w-4 h-4" />
+              </Button>
+              <Button
+                onClick={() => handleDeleteQuestion(index)}
+                variant="ghost"
+                size="sm"
+                className="text-[#880015] hover:text-[#aa0020] hover:bg-[#880015]/10"
+                title="Delete Question"
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            </div>
           )}
         </div>
       </div>
@@ -266,10 +297,10 @@ export function WeaversLoom({
     setIsLoadingQuizzes(true);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/make-server-983e2ba5/quiz/list`,
+        `${API_BASE_URL} /make-server-983e2ba5/quiz / list`,
         {
           headers: {
-            Authorization: `Bearer ${publicAnonKey}`,
+            Authorization: `Bearer ${publicAnonKey} `,
             "X-Session-ID": sessionId,
           },
         }
@@ -307,12 +338,12 @@ export function WeaversLoom({
     setIsSaving(true);
     try {
       const response = await fetch(
-        `${API_BASE_URL}/make-server-983e2ba5/quiz/create`,
+        `${API_BASE_URL} /make-server-983e2ba5/quiz / create`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${publicAnonKey}`,
+            Authorization: `Bearer ${publicAnonKey} `,
             "X-Session-ID": sessionId,
           },
           body: JSON.stringify({
@@ -348,10 +379,10 @@ export function WeaversLoom({
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/make-server-983e2ba5/quiz/${quizId}`,
+        `${API_BASE_URL} /make-server-983e2ba5/quiz / ${quizId} `,
         {
           headers: {
-            Authorization: `Bearer ${publicAnonKey}`,
+            Authorization: `Bearer ${publicAnonKey} `,
             "X-Session-ID": sessionId,
           },
         }
@@ -381,11 +412,11 @@ export function WeaversLoom({
 
     try {
       const response = await fetch(
-        `${API_BASE_URL}/make-server-983e2ba5/quiz/${quizId}`,
+        `${API_BASE_URL} /make-server-983e2ba5/quiz / ${quizId} `,
         {
           method: "DELETE",
           headers: {
-            Authorization: `Bearer ${publicAnonKey}`,
+            Authorization: `Bearer ${publicAnonKey} `,
             "X-Session-ID": sessionId,
           },
         }
@@ -417,6 +448,15 @@ export function WeaversLoom({
   const handleDeleteQuestion = (index: number) => {
     const updated = questions.filter((_, i) => i !== index);
     onUpdateQuestions(updated);
+  };
+
+  const handleEditQuestion = (index: number) => {
+    const questionToEdit = questions[index];
+    setNewQuestion({ ...questionToEdit });
+    const updated = questions.filter((_, i) => i !== index);
+    onUpdateQuestions(updated);
+    // Scroll to top of window to see the edit form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -652,7 +692,7 @@ export function WeaversLoom({
                     {newQuestion.answers.map((answer, index) => (
                       <div key={index}>
                         <div className="flex justify-between items-center mb-1">
-                          <Label htmlFor={`answer-${index}`} className="text-[#00C2FF] text-sm">
+                          <Label htmlFor={`answer - ${index} `} className="text-[#00C2FF] text-sm">
                             Answer {String.fromCharCode(65 + index)}
                           </Label>
                           {newQuestion.answers.length > 2 && (
@@ -672,19 +712,19 @@ export function WeaversLoom({
                         </div>
                         <div className="relative">
                           <Input
-                            id={`answer-${index}`}
+                            id={`answer - ${index} `}
                             value={answer}
                             onChange={(e) => {
                               const updated = [...newQuestion.answers];
                               updated[index] = e.target.value;
                               setNewQuestion({ ...newQuestion, answers: updated });
                             }}
-                            placeholder={`Answer ${index + 1}`}
-                            className={`bg-[#1a1a1a] border-[#00C2FF]/30 text-[#00C2FF] ${newQuestion.correctAnswer === index ? 'border-[#FFD700] border-2' : ''}`}
+                            placeholder={`Answer ${index + 1} `}
+                            className={`bg - [#1a1a1a] border - [#00C2FF] / 30 text - [#00C2FF] ${newQuestion.correctAnswer === index ? 'border-[#FFD700] border-2' : ''} `}
                           />
                           <button
                             onClick={() => setNewQuestion({ ...newQuestion, correctAnswer: index })}
-                            className={`absolute right-2 top-1/2 -translate-y-1/2 ${newQuestion.correctAnswer === index ? 'text-[#FFD700]' : 'text-[#6b7280]'}`}
+                            className={`absolute right - 2 top - 1 / 2 - translate - y - 1 / 2 ${newQuestion.correctAnswer === index ? 'text-[#FFD700]' : 'text-[#6b7280]'} `}
                             title="Mark as correct answer"
                           >
                             <CheckCircle className="w-4 h-4" />
@@ -744,6 +784,7 @@ export function WeaversLoom({
                           isCurrentQuestion={isCurrentQuestion}
                           gameStatus={gameStatus}
                           handleDeleteQuestion={handleDeleteQuestion}
+                          handleEditQuestion={handleEditQuestion}
                         />
                       );
                     })}
@@ -775,7 +816,7 @@ export function WeaversLoom({
                   <div className="h-2 bg-[#1a1a1a] rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-[#FFD700] to-[#FFA500] transition-all duration-500"
-                      style={{ width: `${progressPercent}%` }}
+                      style={{ width: `${progressPercent}% ` }}
                     />
                   </div>
                 </div>
@@ -794,7 +835,7 @@ export function WeaversLoom({
                   <div className="h-2 bg-[#1a1a1a] rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-[#00C2FF] to-[#0090cc] transition-all duration-300"
-                      style={{ width: `${answeredPercent}%` }}
+                      style={{ width: `${answeredPercent}% ` }}
                     />
                   </div>
                 </div>
@@ -857,9 +898,9 @@ export function WeaversLoom({
 
       {/* Quiz Modal */}
       {showQuizModal && (
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#0a0a0a] border-2 border-[#00C2FF]/30 rounded-xl p-6 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-6">
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center p-4">
+          <div className="bg-[#0a0a0a] border-2 border-[#00C2FF]/30 rounded-xl p-6 max-w-2xl w-full flex flex-col max-h-[90vh] overflow-hidden shadow-2xl">
+            <div className="flex items-center justify-between mb-6 shrink-0">
               <h2 className="text-[#FFD700] text-xl">Quiz Manager</h2>
               <Button
                 onClick={() => setShowQuizModal(false)}
@@ -899,8 +940,10 @@ export function WeaversLoom({
             </div>
 
             {/* Saved quizzes list */}
-            <div>
-              <h3 className="text-[#00C2FF] mb-4 text-sm uppercase tracking-wider">Saved Quizzes</h3>
+            <div className="overflow-y-auto flex-1 pr-2 min-h-0">
+              <div className="sticky top-0 bg-[#0a0a0a] pb-2 pt-1 z-10 border-b border-[#00C2FF]/20 mb-4">
+                <h3 className="text-[#00C2FF] text-sm uppercase tracking-wider">Saved Quizzes</h3>
+              </div>
               {isLoadingQuizzes ? (
                 <div className="text-center py-8">
                   <Loader2 className="w-8 h-8 animate-spin text-[#00C2FF] mx-auto" />
