@@ -4,6 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/server.js",
+    "build": "tsc",
     "dev": "nodemon --watch src --exec ts-node server.ts",
     "test": "cross-env NODE_ENV=test jest --runInBand",
     "test:watch": "cross-env NODE_ENV=test jest --watch --runInBand"
