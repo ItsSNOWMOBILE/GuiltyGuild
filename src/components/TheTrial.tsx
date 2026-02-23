@@ -171,10 +171,8 @@ export function TheTrial({
     }
 
     // Default Player/Host State: Purple System Window
-    return `${baseStyle}
-      bg-[#0a0a0cd9] border-[#7c3aed]
-      hover:bg-[#1a052b] hover:border-[#D946EF] hover:shadow-[0_0_30px_rgba(217,70,239,0.9),0_0_80px_rgba(217,70,239,0.4)] hover:-translate-y-1 hover:scale-[1.01]
-    `;
+    // Hover glow is driven by CSS (.answer-option:not(:disabled):hover in globals.css)
+    return `${baseStyle} bg-[#0a0a0cd9] border-[#7c3aed]`;
   };
 
   const letters = ["A", "B", "C", "D"];
@@ -343,10 +341,11 @@ export function TheTrial({
                 key={index}
                 onClick={() => handleAnswerClick(index)}
                 disabled={hasAnswered || phase !== 'QUESTION_ACTIVE'}
-                className={getAnswerStyle(index)}
+                className={`answer-option ${getAnswerStyle(index)}`}
               >
                 {/* Letter Key */}
                 <div className={`
+                    answer-letter-key
                     flex items-center justify-center w-10 h-10 rounded-lg border font-mono font-bold text-sm
                     transition-all duration-300 shrink-0 z-10
                       ${isCorrect
@@ -357,7 +356,7 @@ export function TheTrial({
                         ? 'bg-[#0a0a0c] border-gray-800 text-gray-600'
                         : isSelected
                           ? 'bg-[#2a0a45] border-[#FFD700] text-[#FFD700] shadow-[0_0_20px_rgba(255,215,0,0.8)]'
-                          : 'bg-[#0a0a0c] border-[#7c3aed] text-[#e9d5ff] group-hover:border-[#FFD700] group-hover:text-white group-hover:shadow-[0_0_20px_rgba(255,215,0,0.8)]'}
+                          : 'bg-[#0a0a0c] border-[#7c3aed] text-[#e9d5ff]'}
                   `}>
                   {letters[index]}
                 </div>
