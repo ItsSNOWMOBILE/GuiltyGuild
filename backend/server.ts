@@ -5,12 +5,8 @@ import cors from "cors";
 import crypto from "crypto";
 import dotenv from "dotenv";
 import * as kv from "./db";
-import { autoImportQuizzes } from "./importQuizzes";
 
 dotenv.config();
-
-// Run the auto-importer to ensure default quizzes are present
-autoImportQuizzes().catch(err => console.error("Auto-import failed:", err));
 
 // ---------------------------------------------------------------------------
 // Types
