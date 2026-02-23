@@ -3006,25 +3006,132 @@ html {
   }
 }
 
-/* ── TheTrial answer option hover glow ───────────────────────────────────── */
+/* ── TheTrial answer option states ───────────────────────────────────────── */
 /* Tailwind v4 has no Vite plugin here — index.css is the pre-compiled static */
-/* output bundled by Vite. Hover arbitrary-value classes inside template       */
-/* literals are never scanned, so we drive hover states in plain CSS.          */
+/* output. Arbitrary-value classes inside template literals are never scanned, */
+/* so ALL visual answer states are driven by plain CSS classes.                 */
 
+/* Shared transition + defaults */
 button.answer-option {
+  background-color: rgba(10, 10, 12, 0.85);
+  border-color: #7c3aed;
   transition: background-color 300ms ease, border-color 300ms ease,
-    box-shadow 300ms ease, transform 300ms ease;
+    box-shadow 300ms ease, transform 300ms ease, opacity 300ms ease,
+    filter 300ms ease;
+}
+button.answer-option .answer-letter-key {
+  background-color: #0a0a0c;
+  border-color: #7c3aed;
+  color: #e9d5ff;
+  transition: border-color 300ms ease, color 300ms ease, box-shadow 300ms ease,
+    background-color 300ms ease;
+}
+button.answer-option .answer-text {
+  color: #e5e7eb;
+  transition: color 200ms ease, text-shadow 200ms ease, opacity 200ms ease;
 }
 
+/* ── Hover (idle state) ── */
 button.answer-option:not(:disabled):hover {
   background-color: #1a052b;
   border-color: #d946ef;
   box-shadow: 0 0 30px rgba(217, 70, 239, 0.9), 0 0 80px rgba(217, 70, 239, 0.4);
   transform: translateY(-4px) scale(1.01);
 }
-
 button.answer-option:not(:disabled):hover .answer-letter-key {
   border-color: #ffd700;
   color: #ffd700;
   box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+}
+button.answer-option:not(:disabled):hover .answer-text {
+  color: #ffffff;
+}
+
+/* ── Selected (clicked, pre-submit) ── */
+button.answer-option.answer-selected {
+  background-color: rgba(42, 10, 69, 0.9);
+  border-color: #ffd700;
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+  transform: scale(1.02);
+}
+button.answer-option.answer-selected .answer-letter-key {
+  background-color: #2a0a45;
+  border-color: #ffd700;
+  color: #ffd700;
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+}
+button.answer-option.answer-selected .answer-text {
+  color: #ffd700;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.8);
+}
+
+/* ── Pending (answered, awaiting reveal — own pick) ── */
+button.answer-option.answer-pending {
+  background-color: rgba(255, 215, 0, 0.1);
+  border-color: #ffd700;
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.6);
+}
+button.answer-option.answer-pending .answer-letter-key {
+  border-color: #ffd700;
+  color: #ffd700;
+}
+button.answer-option.answer-pending .answer-text {
+  color: #ffd700;
+}
+
+/* ── Idle (answered, awaiting reveal — not own pick) ── */
+button.answer-option.answer-idle {
+  opacity: 0.4;
+}
+
+/* ── Reveal: correct answer ── */
+button.answer-option.answer-correct {
+  opacity: 1;
+  background-color: rgba(10, 10, 12, 0.85);
+  border-color: #4ade80;
+  box-shadow: 0 0 60px rgba(74, 222, 128, 0.8);
+  transform: scale(1.02);
+  z-index: 20;
+}
+button.answer-option.answer-correct .answer-letter-key {
+  border-color: #4ade80;
+  color: #4ade80;
+  box-shadow: 0 0 30px rgba(74, 222, 128, 0.8);
+}
+button.answer-option.answer-correct .answer-text {
+  color: #4ade80;
+  text-shadow: 0 0 10px rgba(74, 222, 128, 0.8);
+}
+
+/* ── Reveal: wrong selection ── */
+button.answer-option.answer-wrong {
+  opacity: 1;
+  background-color: rgba(10, 10, 12, 0.85);
+  border-color: rgb(239, 68, 68);
+  box-shadow: 0 0 40px rgba(239, 68, 68, 0.8);
+  z-index: 10;
+}
+button.answer-option.answer-wrong .answer-letter-key {
+  border-color: rgb(239, 68, 68);
+  color: rgb(239, 68, 68);
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+}
+button.answer-option.answer-wrong .answer-text {
+  color: rgb(248, 113, 113);
+  text-decoration: line-through;
+  opacity: 0.8;
+  text-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+}
+
+/* ── Reveal: dimmed (neither correct nor wrong selection) ── */
+button.answer-option.answer-dimmed {
+  opacity: 0.3;
+  filter: grayscale(1) blur(1px);
+}
+button.answer-option.answer-dimmed .answer-letter-key {
+  border-color: rgb(31, 41, 55);
+  color: rgb(75, 85, 99);
+}
+button.answer-option.answer-dimmed .answer-text {
+  color: rgb(75, 85, 99);
 }

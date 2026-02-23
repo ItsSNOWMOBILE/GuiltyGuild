@@ -131,48 +131,30 @@ export function TheTrial({
   };
 
   // --- Styles ---
+  // All visual state styling (colors, shadows, glows) is driven by CSS state
+  // classes in src/index.css — Tailwind v4 has no Vite plugin here so arbitrary
+  // hover:/shadow-[...] classes inside template literals are never generated.
 
-  const getAnswerStyle = (index: number) => {
+  const baseAnswerClass =
+    "answer-option relative group w-full p-6 text-left border-2 rounded-lg backdrop-blur-xl flex items-center gap-4";
+
+  const getAnswerStateClass = (index: number): string => {
     const isSelected = selectedAnswer === index;
     const isReveal = phase === 'REVEAL_ANSWER';
     const correctAnswerNum = question?.correctAnswer !== undefined ? Number(question.correctAnswer) : undefined;
     const isCorrect = isReveal && correctAnswerNum === index;
     const isWrongSelection = isReveal && isSelected && !isCorrect;
-    // Base "Royal System"
-    let baseStyle = `
-      relative group w-full p-6 text-left transition-all duration-300
-      border-2 rounded-lg backdrop-blur-xl
-      flex items-center gap-4
-    `;
 
     if (isReveal) {
-      if (isCorrect) {
-        // Correct Answer -> Massive Outer Green Glow
-        return `${baseStyle} bg-[#0a0a0cd9] border-[#4ADE80] shadow-[0_0_60px_rgba(74,222,128,0.8)] scale-[1.02] z-20`;
-      }
-      if (isWrongSelection) {
-        // Wrong Selection -> Outer Red Glow
-        return `${baseStyle} bg-[#0a0a0cd9] border-red-500 shadow-[0_0_40px_rgba(239,68,68,0.8)] z-10`;
-      }
-      return `${baseStyle} bg-black/60 border-gray-700 opacity-30 grayscale blur-[1px]`;
+      if (isCorrect) return "answer-correct";
+      if (isWrongSelection) return "answer-wrong";
+      return "answer-dimmed";
     }
-
     if (hasAnswered && !isHost) {
-      if (isSelected) {
-        return `${baseStyle} bg-[#FFD700]/10 border-[#FFD700] shadow-[0_0_25px_rgba(255,215,0,0.6)]`;
-      }
-      return `${baseStyle} bg-black/60 border-gray-800 opacity-40`;
+      return isSelected ? "answer-pending" : "answer-idle";
     }
-
-    // Active state styling (when a player selects an answer before reveal)
-    if (isSelected && !isHost) {
-      // High contrast selection (Royal Choice)
-      return `${baseStyle} bg-[#2a0a45]/90 border-[#FFD700] shadow-[0_0_30px_rgba(255,215,0,0.5)] scale-[1.02]`;
-    }
-
-    // Default Player/Host State: Purple System Window
-    // Hover glow is driven by CSS (.answer-option:not(:disabled):hover in globals.css)
-    return `${baseStyle} bg-[#0a0a0cd9] border-[#7c3aed]`;
+    if (isSelected && !isHost) return "answer-selected";
+    return "";
   };
 
   const letters = ["A", "B", "C", "D"];
@@ -330,49 +312,20 @@ export function TheTrial({
         {/* Answer Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in slide-in-from-bottom-8 fade-in duration-700 delay-300">
           {question?.answers.map((answer, index) => {
-            const isSelected = selectedAnswer === index;
-            const isReveal = phase === 'REVEAL_ANSWER';
-            const correctAnswerNum = question?.correctAnswer !== undefined ? Number(question.correctAnswer) : undefined;
-            const isCorrect = isReveal && correctAnswerNum === index;
-            const isWrongSelection = isReveal && isSelected && !isCorrect;
-
             return (
               <button
                 key={index}
                 onClick={() => handleAnswerClick(index)}
                 disabled={hasAnswered || phase !== 'QUESTION_ACTIVE'}
-                className={`answer-option ${getAnswerStyle(index)}`}
+                className={`${baseAnswerClass} ${getAnswerStateClass(index)}`}
               >
                 {/* Letter Key */}
-                <div className={`
-                    answer-letter-key
-                    flex items-center justify-center w-10 h-10 rounded-lg border font-mono font-bold text-sm
-                    transition-all duration-300 shrink-0 z-10
-                      ${isCorrect
-                    ? 'bg-[#0a0a0c] border-[#4ADE80] text-[#4ADE80] shadow-[0_0_30px_rgba(74,222,128,0.8)]'
-                    : isWrongSelection
-                      ? 'bg-[#0a0a0c] border-red-500 text-red-500 shadow-[0_0_20px_rgba(239,68,68,0.8)]'
-                      : isReveal
-                        ? 'bg-[#0a0a0c] border-gray-800 text-gray-600'
-                        : isSelected
-                          ? 'bg-[#2a0a45] border-[#FFD700] text-[#FFD700] shadow-[0_0_20px_rgba(255,215,0,0.8)]'
-                          : 'bg-[#0a0a0c] border-[#7c3aed] text-[#e9d5ff]'}
-                  `}>
+                <div className="answer-letter-key flex items-center justify-center w-10 h-10 rounded-lg border font-mono font-bold text-sm shrink-0 z-10">
                   {letters[index]}
                 </div>
 
                 {/* Answer Text */}
-                <span className={`
-                    text-lg font-bold tracking-wide transition-colors duration-200
-                    ${isCorrect
-                    ? 'text-[#4ADE80] drop-shadow-[0_0_10px_rgba(74,222,128,0.8)] scale-105 transform origin-left inline-block'
-                    : isWrongSelection
-                      ? 'text-red-400 drop-shadow-[0_0_10px_rgba(239,68,68,0.8)] line-through opacity-80'
-                      : isReveal
-                        ? 'text-gray-600'
-                        : isSelected ? 'text-[#FFD700] drop-shadow-[0_0_5px_rgba(255,215,0,0.8)]'
-                          : 'text-gray-200 group-hover:text-white'}
-                  `}>
+                <span className="answer-text text-lg font-bold tracking-wide">
                   {answer}
                 </span>
 
