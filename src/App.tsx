@@ -560,7 +560,8 @@ export default function App() {
                     currentRoundAnswers: prev?.hostId === user?.id ? prev?.currentRoundAnswers ?? payload.currentRoundAnswers : payload.currentRoundAnswers,
                     playerData: payload.playerData ?? prev?.playerData,
                     // Reset per-round client state when question changes
-                    userHasAnswered: questionChanged ? payload.userHasAnswered : (payload.userHasAnswered ?? prev?.userHasAnswered),
+                    // Use || not ?? so a payload false never stomps an optimistic true
+                    userHasAnswered: questionChanged ? (payload.userHasAnswered ?? false) : (payload.userHasAnswered || prev?.userHasAnswered || false),
                     roundResult: questionChanged ? payload.roundResult : (payload.roundResult ?? prev?.roundResult),
                 };
             });
@@ -773,7 +774,9 @@ export default function App() {
         if (!gameState) return null;
         const totalPlayers = gameState.playerData?.length ?? gameState.players?.length ?? 0;
         const answers = gameState.currentRoundAnswers ?? {};
-        const answeredCount = Object.values(answers).filter((a) => a.answerIndex >= 0).length;
+        // Count any entry — placeholder entries (answerIndex: -1) from player_answered
+        // socket events still represent a player who has answered.
+        const answeredCount = Object.keys(answers).length;
 
         let correct = 0, incorrect = 0;
         if (gameState.questions && gameState.currentQuestionIndex >= 0) {

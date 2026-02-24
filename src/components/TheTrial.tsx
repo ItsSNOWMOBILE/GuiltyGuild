@@ -93,10 +93,12 @@ export function TheTrial({
     return () => clearInterval(interval);
   }, [phase, phaseStartTime, timeLimit, isHost, onTimeUp]);
 
-  // Reset selected answer when question changes
+  // Reset selected answer on new question or any phase transition.
+  // phaseStartTime changes every time the server advances the phase, so
+  // this fires reliably even when questionNumber hasn't re-rendered yet.
   useEffect(() => {
     setSelectedAnswer(null);
-  }, [questionNumber]);
+  }, [questionNumber, phaseStartTime]);
 
   // Keyboard shortcuts for answers (1-4 keys)
   useEffect(() => {
